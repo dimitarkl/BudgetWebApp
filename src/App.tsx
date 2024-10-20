@@ -15,10 +15,18 @@ function App() {
     const unsubscribe = auth.onAuthStateChanged((user) => setLoggedIn(user));
     return () => unsubscribe();
   }, [])
+  const logout = async () => {
+    try {
+      await auth.signOut();
+      navigate('/')
+    } catch (error) {
+      console.error('Logout error: ', error);
+    }
+  }
   return (
     <UserContext.Provider value={loggedIn}>
       <ThemeProvider defaultTheme="dark" >
-        <Header />
+        <Header logout={logout} />
         <main>
           <Routes>
             <Route path='/' element={<Home />} />
