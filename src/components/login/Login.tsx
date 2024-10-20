@@ -13,7 +13,9 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { ArrowRight, Eye, EyeOff } from "lucide-react"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { UserCredential } from 'firebase/auth'
+import { login } from '../../api/auth'
 const formSchema = z.object({
     email: z.string().email({
         message: "Please enter a valid email address.",
@@ -31,9 +33,13 @@ export default function Login() {
             password: "",
         },
     })
-    function onSubmit(data: z.infer<typeof formSchema>) {
-        console.log(data)
+    const navigate = useNavigate();
+
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        const response: UserCredential | Error = await login(data.email, data.password);
+        if (!response) return
         form.reset()
+        navigate('/')
     }
     return (
         <section className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">

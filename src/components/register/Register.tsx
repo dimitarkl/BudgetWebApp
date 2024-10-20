@@ -13,10 +13,12 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { ArrowRight, Eye, EyeOff } from "lucide-react"
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { register } from '../../api/auth'
+import { UserCredential } from 'firebase/auth'
 
 const formSchema = z.object({
-    name: z.string().min(2, {
+    rePass: z.string().min(2, {
         message: "Name must be at least 2 characters.",
     }),
     email: z.string().email({
@@ -28,20 +30,24 @@ const formSchema = z.object({
 })
 
 export default function Register() {
+    const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            name: "",
+            rePass: "",
             email: "",
             password: "",
         },
     })
 
-    function onSubmit(data: z.infer<typeof formSchema>) {
-        console.log(data)
+    async function onSubmit(data: z.infer<typeof formSchema>) {
+        if (data.password != data.rePass) throw new Error('Passwords dont match')
+        const response: UserCredential = await register(data.email, data.password);
+        if (!response) return
         form.reset()
+        navigate('/')
     }
 
     return (
@@ -54,19 +60,7 @@ export default function Register() {
                 </div>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-4 mt-8">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Full Name</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="John Doe" {...field} />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+
                         <FormField
                             control={form.control}
                             name="email"
@@ -86,6 +80,34 @@ export default function Register() {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Password</FormLabel>
+                                    <FormControl>
+                                        <div className="relative">
+                                            <Input
+                                                type={showPassword ? "text" : "password"}
+                                                placeholder="••••••••"
+                                                {...field}
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="ghost"
+                                                size="icon"
+                                                className="absolute right-2 top-1/2 -translate-y-1/2"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                            >
+                                                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                            </Button>
+                                        </div>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="rePass"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Repeat Password</FormLabel>
                                     <FormControl>
                                         <div className="relative">
                                             <Input
