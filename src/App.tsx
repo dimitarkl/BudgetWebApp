@@ -1,6 +1,8 @@
 import Home from '@/components/home/Home'
 import { Header } from './components/header/Header'
 import { ThemeProvider } from "@/components/ui/theme-provider"
+import Login from './components/login/Login'
+import { Route, Routes } from 'react-router-dom'
 function App() {
 
   return (
@@ -8,8 +10,12 @@ function App() {
     <ThemeProvider defaultTheme="dark" >
       <Header />
       <main>
-        <Home />
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/login' element={< Login />} />
+        </Routes>
       </main>
+
     </ThemeProvider>
   )
 }
