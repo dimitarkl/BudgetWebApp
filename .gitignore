@@ -22,3 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# I don’t want to show my secrets
+/src/lib/firebaseConfig.ts
