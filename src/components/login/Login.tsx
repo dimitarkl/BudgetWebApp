@@ -14,8 +14,9 @@ import {
 } from "@/components/ui/form"
 import { ArrowRight, Eye, EyeOff } from "lucide-react"
 import { Link, useNavigate } from 'react-router-dom'
-import { UserCredential } from 'firebase/auth'
 import { login } from '../../api/auth'
+import { Error } from '../error/Error'
+
 const formSchema = z.object({
     email: z.string().email({
         message: "Please enter a valid email address.",
@@ -24,8 +25,14 @@ const formSchema = z.object({
         message: "Password must be at least 8 characters.",
     }),
 })
+
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false)
+
+    const [errorMessage, setErrorMessage] = useState('')
+
+    const navigate = useNavigate();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -33,16 +40,29 @@ export default function Login() {
             password: "",
         },
     })
-    const navigate = useNavigate();
+
+    function isError(response: any): response is Error {
+        return response instanceof Error ||
+            (typeof response === 'object' && response !== null && 'message' in response);
+    }
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        const response: UserCredential | Error = await login(data.email, data.password);
+        const response = await login(data.email, data.password);
         if (!response) return
-        form.reset()
-        navigate('/')
+        console.log('Response:', response);
+        console.log('Is Error:', isError(response));
+        if (isError(response)) {
+            setErrorMessage(response.message)
+            return
+        } else {
+            form.reset()
+            navigate('/')
+        }
     }
+
     return (
         <section className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
+
             <div className="container px-4 md:px-6 flex flex-col items-center">
                 <div className="flex flex-col items-center space-y-4 text-center">
                     <h1 className="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl ">
@@ -96,6 +116,7 @@ export default function Login() {
                             Create Account
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
+                        {errorMessage && <Error message={errorMessage} />}
                     </form>
                 </Form>
                 <p className="mt-4 text-sm text-muted-foreground">

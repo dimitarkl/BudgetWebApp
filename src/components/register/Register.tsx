@@ -16,6 +16,7 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react"
 import { Link, useNavigate } from 'react-router-dom'
 import { register } from '../../api/auth'
 import { UserCredential } from 'firebase/auth'
+import { Error } from '../error/Error'
 
 const formSchema = z.object({
     rePass: z.string().min(2, {
@@ -32,6 +33,8 @@ const formSchema = z.object({
 export default function Register() {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -41,14 +44,27 @@ export default function Register() {
             password: "",
         },
     })
-
+    function isError(response: any): response is Error {
+        return response instanceof Error ||
+            (typeof response === 'object' && response !== null && 'message' in response);
+    }
     async function onSubmit(data: z.infer<typeof formSchema>) {
-        if (data.password != data.rePass) throw new Error('Passwords dont match')
+        if (data.password != data.rePass) {
+            setErrorMessage('Passwords dont match')
+            return
+
+        }
         const response: UserCredential = await register(data.email, data.password);
         if (!response) return
-        form.reset()
-        navigate('/')
+        if (isError(response)) {
+            setErrorMessage(response.message)
+            return
+        } else {
+            form.reset()
+            navigate('/')
+        }
     }
+
 
     return (
         <section className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
@@ -129,7 +145,7 @@ export default function Register() {
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        />{errorMessage && <Error message={errorMessage} />}
                         <Button type="submit" className="w-full" size="lg">
                             Create Account
                             <ArrowRight className="ml-2 h-4 w-4" />
