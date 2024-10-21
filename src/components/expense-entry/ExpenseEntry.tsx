@@ -21,7 +21,9 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { ExpenseType } from "./expense-type/ExpenseType"
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { createExpense } from "@/api/expenses"
+import UserContext from "../contexts/UserContext"
 
 const formSchema = z.object({
     sum: z.string().min(1, {
@@ -32,6 +34,7 @@ const formSchema = z.object({
 
 export function ExpenseEntry() {
     const [type, setType] = useState('')
+    const user = useContext(UserContext)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -44,6 +47,9 @@ export function ExpenseEntry() {
     function onSubmit(data: z.infer<typeof formSchema>) {
         console.log(data)
         console.log(type)
+        if (!type) return
+        if (user?.uid)
+            createExpense(user?.uid, data.sum, type, data.description)
     }
 
     function Type(currentValue: string) {
