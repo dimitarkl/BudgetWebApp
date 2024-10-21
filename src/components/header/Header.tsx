@@ -3,7 +3,6 @@ import { Link } from "react-router-dom"
 import {
     NavigationMenu,
     NavigationMenuItem,
-    NavigationMenuLink,
     NavigationMenuList,
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
@@ -20,20 +19,25 @@ export function Header({
 }: Props) {
     const user = useContext(UserContext)
     return (
-        <NavigationMenu><ModeToggle />
-            <NavigationMenuItem>
-                <Link to="/" className={navigationMenuTriggerStyle()}>
-                    Home
-                </Link>
-
-            </NavigationMenuItem>
+        <NavigationMenu>
             <NavigationMenuList>
+                <NavigationMenuItem>
+                    <ModeToggle />
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <Link to="/" className={navigationMenuTriggerStyle()}>
+                        Home
+                    </Link>
+                </NavigationMenuItem>
                 {user
                     ?
-                    <>
+                    <><NavigationMenuItem>
+                        <Link to="/expense" className={navigationMenuTriggerStyle()}>
+                            Add expense
+                        </Link>
+                    </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <Link to="/" className={navigationMenuTriggerStyle()}>
-
+                            <Link to="/" onClick={logout} className={navigationMenuTriggerStyle()}>
                                 Logout
                             </Link>
                         </NavigationMenuItem>

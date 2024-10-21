@@ -49,8 +49,6 @@ export default function Login() {
     async function onSubmit(data: z.infer<typeof formSchema>) {
         const response = await login(data.email, data.password);
         if (!response) return
-        console.log('Response:', response);
-        console.log('Is Error:', isError(response));
         if (isError(response)) {
             setErrorMessage(response.message)
             return
