@@ -22,10 +22,8 @@ export function Header({
     return (
         <NavigationMenu><ModeToggle />
             <NavigationMenuItem>
-                <Link to="/" >
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                        Home
-                    </NavigationMenuLink>
+                <Link to="/" className={navigationMenuTriggerStyle()}>
+                    Home
                 </Link>
 
             </NavigationMenuItem>
@@ -34,28 +32,23 @@ export function Header({
                     ?
                     <>
                         <NavigationMenuItem>
-                            <Link to="/" >
-                                <NavigationMenuLink onClick={logout} className={navigationMenuTriggerStyle()}>
-                                    Logout
-                                </NavigationMenuLink>
+                            <Link to="/" className={navigationMenuTriggerStyle()}>
+
+                                Logout
                             </Link>
                         </NavigationMenuItem>
                     </>
                     :
                     <>
                         <NavigationMenuItem>
-                            <Link to="/login" >
-                                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                    Login
-                                </NavigationMenuLink>
+                            <Link to="/login" className={navigationMenuTriggerStyle()}>
+                                Login
                             </Link>
 
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <Link to="/register" >
-                                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                                    Register
-                                </NavigationMenuLink>
+                            <Link to="/register" className={navigationMenuTriggerStyle()}>
+                                Register
                             </Link>
                         </NavigationMenuItem>
                     </>
