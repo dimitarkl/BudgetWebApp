@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Link } from "react-router-dom"
 
 export default function GuestHome() {
     return (
@@ -15,7 +16,7 @@ export default function GuestHome() {
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                         <Button size="lg">
-                            Register
+                            <Link to='register'>Register</Link>
                         </Button>
                     </div>
                 </div>

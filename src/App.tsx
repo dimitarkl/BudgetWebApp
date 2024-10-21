@@ -8,6 +8,8 @@ import { auth } from './lib/firebase'
 import { useEffect, useState } from 'react'
 import GuestHome from '@/components/home/GuestHome'
 import { ExpenseEntry } from './components/expense-entry/ExpenseEntry'
+import { RouteGuard } from './route-guard/RouteGuard'
+import { AuthGuard } from './route-guard/AuthGuard'
 function App() {
   const [loggedIn, setLoggedIn] = useState(auth.currentUser);
   const navigate = useNavigate()
@@ -31,9 +33,23 @@ function App() {
         <main>
           <Routes>
             <Route path='/' element={<GuestHome />} />
-            <Route path='/login' element={< Login />} />
-            <Route path='/register' element={< Register />} />
-            <Route path='/expense' element={<ExpenseEntry />} />
+            <Route path='/login' element=
+              {
+                <AuthGuard user={loggedIn} >
+                  <Login />
+                </AuthGuard>
+              }
+            />
+            <Route path='/register' element={
+              <AuthGuard user={loggedIn} >
+                <Register />
+              </AuthGuard>
+            } />
+            <Route path='/expense' element={
+              <RouteGuard user={loggedIn} >
+                <ExpenseEntry />
+              </RouteGuard>
+            } />
           </Routes>
         </main>
       </ThemeProvider>
