@@ -24,6 +24,9 @@ import { ExpenseType } from "./expense-type/ExpenseType"
 import { useContext, useState } from "react"
 import { createExpense } from "@/api/expenses"
 import UserContext from "../contexts/UserContext"
+import { isError } from "@/lib/errorCheck"
+import { useNavigate } from "react-router-dom"
+import { Error } from "../error/Error"
 
 const formSchema = z.object({
     //TODO add validation
@@ -34,7 +37,9 @@ const formSchema = z.object({
 })
 
 export function ExpenseEntry() {
+    const [errorMessage, setErrorMessage] = useState('')
     const [type, setType] = useState('')
+    const navigate = useNavigate()
     const user = useContext(UserContext)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -49,8 +54,16 @@ export function ExpenseEntry() {
         console.log(data)
         console.log(type)
         if (!type) return
-        if (user?.uid)
-            createExpense(user?.uid, data.sum, type, data.description)
+        if (user?.uid) {
+            const response = createExpense(user?.uid, data.sum, type, data.description)
+            if (isError(response)) {
+                setErrorMessage(response.message)
+                return
+            } else {
+                form.reset()
+                navigate('/')
+            }
+        }
     }
     function Type(currentValue: string) {
         setType(currentValue)
@@ -99,9 +112,11 @@ export function ExpenseEntry() {
                                     <FormMessage />
                                 </FormItem>
                             )}
+
                         />
 
                         <Button type="submit">Save changes</Button>
+                        {errorMessage && <Error message={errorMessage} />}
                     </form>
                 </Form>
                 <DialogFooter>

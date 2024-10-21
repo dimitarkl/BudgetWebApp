@@ -16,6 +16,7 @@ import { ArrowRight, Eye, EyeOff } from "lucide-react"
 import { Link, useNavigate } from 'react-router-dom'
 import { login } from '../../api/auth'
 import { Error } from '../error/Error'
+import { isError } from '@/lib/errorCheck'
 
 const formSchema = z.object({
     email: z.string().email({
@@ -40,11 +41,6 @@ export default function Login() {
             password: "",
         },
     })
-
-    function isError(response: any): response is Error {
-        return response instanceof Error ||
-            (typeof response === 'object' && response !== null && 'message' in response);
-    }
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
         const response = await login(data.email, data.password);

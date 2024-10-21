@@ -23,8 +23,8 @@ const createExpense = (userId: string, sum: string, type: string, description?: 
     const docCol = doc(collection(db, 'expenses'))
     setDoc(docCol, body).then(() => {
         console.log('Data sent to Firebase Realtime Database!');
-    }).catch((error) => {
-        console.error('Error sending data:', error);
+    }).catch((err) => {
+        return err instanceof Error ? err : new Error(String(err));
     })
 }
 
