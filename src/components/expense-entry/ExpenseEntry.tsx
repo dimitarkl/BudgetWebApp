@@ -26,6 +26,7 @@ import { createExpense } from "@/api/expenses"
 import UserContext from "../contexts/UserContext"
 
 const formSchema = z.object({
+    //TODO add validation
     sum: z.string().min(1, {
         message: "Please enter a Number"
     }),
@@ -51,7 +52,6 @@ export function ExpenseEntry() {
         if (user?.uid)
             createExpense(user?.uid, data.sum, type, data.description)
     }
-
     function Type(currentValue: string) {
         setType(currentValue)
     }
