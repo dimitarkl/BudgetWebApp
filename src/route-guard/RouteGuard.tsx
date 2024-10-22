@@ -6,7 +6,7 @@ type Props = {
     children: React.ReactNode
 }
 
-export const RouteGuard = ({ user, children }: Props) => {
+export default function RouteGuard({ user, children }: Props) {
     if (!user) {
         return <Navigate to="/" replace />;
     }

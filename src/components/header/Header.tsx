@@ -14,7 +14,7 @@ type Props = {
     logout: () => Promise<void>
 }
 
-export function Header({
+export default function Header({
     logout
 }: Props) {
     const user = useContext(UserContext)

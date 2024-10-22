@@ -6,7 +6,7 @@ type Props = {
     children: React.ReactNode
 }
 
-export const AuthGuard = ({ user, children }: Props) => {
+export default function AuthGuard({ user, children }: Props) {
     if (user) {
         return <Navigate to="/" replace />;
     }
