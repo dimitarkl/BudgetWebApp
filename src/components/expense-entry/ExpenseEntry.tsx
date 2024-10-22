@@ -27,6 +27,7 @@ import UserContext from "../contexts/UserContext"
 import { isError } from "@/lib/errorCheck"
 import { useNavigate } from "react-router-dom"
 import { Error } from "../error/Error"
+import { PlusCircle } from "lucide-react"
 
 const formSchema = z.object({
     //TODO add validation
@@ -51,8 +52,7 @@ export function ExpenseEntry() {
     })
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-        console.log(data)
-        console.log(type)
+
         if (!type) return
         if (user?.uid) {
             const response = createExpense(user?.uid, data.sum, type, data.description)
@@ -70,13 +70,17 @@ export function ExpenseEntry() {
     }
 
     return (
+
         <Dialog>
-            <div className="flex justify-center items-center h-screen">
+            <div className="">
                 <DialogTrigger asChild>
-                    <Button variant="outline">Expense</Button>
+                    <Button className="bg-primary hover:bg-primary/90">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Add Expense
+                    </Button>
                 </DialogTrigger>
             </div>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="min-w-fit">
                 <DialogHeader>
                     <DialogTitle>Expense</DialogTitle>
                     <DialogDescription>

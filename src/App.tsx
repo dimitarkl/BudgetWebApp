@@ -6,10 +6,12 @@ import Register from './components/register/Register'
 import UserContext from './components/contexts/UserContext'
 import { auth } from './lib/firebase'
 import { useEffect, useState } from 'react'
-import GuestHome from '@/components/home/GuestHome'
+import GuestHome from '@/components/home/LandingPage'
 import { ExpenseEntry } from './components/expense-entry/ExpenseEntry'
 import { RouteGuard } from './route-guard/RouteGuard'
 import { AuthGuard } from './route-guard/AuthGuard'
+import Dashboard from './components/home/Dashboard'
+import LandingPage from '@/components/home/LandingPage'
 function App() {
   const [loggedIn, setLoggedIn] = useState(auth.currentUser);
   const navigate = useNavigate()
@@ -32,7 +34,11 @@ function App() {
         <Header logout={logout} />
         <main>
           <Routes>
-            <Route path='/' element={<GuestHome />} />
+            {loggedIn
+              ? <Route path='/' element={<Dashboard />} />
+              : <Route path='/' element={<LandingPage />} />}
+
+
             <Route path='/login' element=
               {
                 <AuthGuard user={loggedIn} >
