@@ -18,15 +18,9 @@ type Expenses = {
 }[]
 type AggregatedData = {
     type: string;
-    sum: number; // This will be a number after summing
-    color: string | undefined; // Color associated with the type
+    sum: number;
+    color: string | undefined;
 };
-const recentTransactions = [
-    { id: 1, description: "Grocery Shopping", sum: 85.50, date: "2023-05-15" },
-    { id: 2, description: "Electric Bill", sum: 120.00, date: "2023-05-14" },
-    { id: 3, description: "Netflix Subscription", sum: 14.99, date: "2023-05-13" },
-    { id: 4, description: "Gas Station", sum: 45.00, date: "2023-05-12" },
-]
 export default function Dashboard() {
     const [dataV, setDataV] = useState<Expenses>([{
         id: '',
@@ -38,6 +32,7 @@ export default function Dashboard() {
     }])
     const [totalSpending, setTotalSpending] = useState(0)
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
+    const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
     useEffect(() => {
         //TODO Update on sending data
         const unsubscribe = () => {
@@ -45,9 +40,11 @@ export default function Dashboard() {
                 .then((dataS: Expenses | Error) => {
                     if (!(dataS instanceof Error)) {
                         setDataV(dataS);
+                        //TODO monthly spending
                         const spending = dataS.reduce((sum, item) => sum + item.sum, 0)
                         setTotalSpending(spending)
                         setAggregatedData(aggregateData(dataS))
+                        setRecentTransactions(dataS.reverse().slice(0, 5))
                     }
                 })
                 .catch((err) => err.message)
@@ -170,8 +167,11 @@ export default function Dashboard() {
                             {recentTransactions.map((transaction) => (
                                 <li key={transaction.id} className="py-4 flex justify-between items-center">
                                     <div>
-                                        <p className="font-medium">{transaction.description}</p>
-                                        <p className="text-sm text-gray-500">{transaction.date}</p>
+                                        <p className="font-medium">{transaction.description
+                                            ? transaction.description
+                                            : 'No data'
+                                        }</p>
+                                        <p className="text-sm text-gray-500">{transaction.createdAt}</p>
                                     </div>
                                     <p className="font-semibold">${transaction.sum.toFixed(2)}</p>
                                 </li>
