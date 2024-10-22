@@ -31,11 +31,7 @@ export function Header({
                 </NavigationMenuItem>
                 {user
                     ?
-                    <><NavigationMenuItem>
-                        <Link to="/expense" className={navigationMenuTriggerStyle()}>
-                            Add expense
-                        </Link>
-                    </NavigationMenuItem>
+                    <>
                         <NavigationMenuItem>
                             <Link to="/" onClick={logout} className={navigationMenuTriggerStyle()}>
                                 Logout

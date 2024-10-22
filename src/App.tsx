@@ -51,11 +51,6 @@ function App() {
                 <Register />
               </AuthGuard>
             } />
-            <Route path='/expense' element={
-              <RouteGuard user={loggedIn} >
-                <ExpenseEntry />
-              </RouteGuard>
-            } />
           </Routes>
         </main>
       </ThemeProvider>
