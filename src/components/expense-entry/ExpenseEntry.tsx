@@ -52,9 +52,7 @@ export function ExpenseEntry() {
     })
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-
-        if (!type) return
-        if (user?.uid) {
+        if (type && user?.uid) {
             const response = createExpense(user?.uid, data.sum, type, data.description)
             if (isError(response)) {
                 setErrorMessage(response.message)

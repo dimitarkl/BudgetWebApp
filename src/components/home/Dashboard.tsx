@@ -1,31 +1,106 @@
 "use client"
 
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
+import { PieChart, Pie, Cell } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { Button } from "../ui/button"
-import { PlusCircle } from "lucide-react"
 import { ExpenseEntry } from "../expense-entry/ExpenseEntry"
 import { getExpenses } from "@/api/expenses"
+import { useEffect, useState } from "react"
+import { Spinner } from "../ui/spinner"
 
-const data = [
-    { name: "Housing", value: 1200, color: "hsl(var(--chart-1))" },
-    { name: "Food", value: 450, color: "hsl(var(--chart-2))" },
-    { name: "Transportation", value: 300, color: "hsl(var(--chart-3))" },
-    { name: "Utilities", value: 200, color: "hsl(var(--chart-4))" },
-    { name: "Entertainment", value: 150, color: "hsl(var(--chart-5))" },
-    { name: "Other", value: 100, color: "hsl(var(--chart-6))" },
-]
-
+type Expenses = {
+    id: string,
+    userId: string,
+    createdAt: string
+    sum: number,
+    type: string,
+    description?: string,
+}[]
+type AggregatedData = {
+    type: string;
+    sum: number; // This will be a number after summing
+    color: string | undefined; // Color associated with the type
+};
 const recentTransactions = [
-    { id: 1, description: "Grocery Shopping", amount: 85.50, date: "2023-05-15" },
-    { id: 2, description: "Electric Bill", amount: 120.00, date: "2023-05-14" },
-    { id: 3, description: "Netflix Subscription", amount: 14.99, date: "2023-05-13" },
-    { id: 4, description: "Gas Station", amount: 45.00, date: "2023-05-12" },
+    { id: 1, description: "Grocery Shopping", sum: 85.50, date: "2023-05-15" },
+    { id: 2, description: "Electric Bill", sum: 120.00, date: "2023-05-14" },
+    { id: 3, description: "Netflix Subscription", sum: 14.99, date: "2023-05-13" },
+    { id: 4, description: "Gas Station", sum: 45.00, date: "2023-05-12" },
 ]
 export default function Dashboard() {
-    const totalSpending = data.reduce((sum, item) => sum + item.value, 0)
+    const [dataV, setDataV] = useState<Expenses>([{
+        id: '',
+        userId: '',
+        createdAt: '',
+        sum: 0,
+        type: '',
+        description: '',
+    }])
+    const [totalSpending, setTotalSpending] = useState(0)
+    const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
+    useEffect(() => {
+        //TODO Update on sending data
+        const unsubscribe = () => {
+            getExpenses()
+                .then((dataS: Expenses | Error) => {
+                    if (!(dataS instanceof Error)) {
+                        setDataV(dataS);
+                        const spending = dataS.reduce((sum, item) => sum + item.sum, 0)
+                        setTotalSpending(spending)
+                        setAggregatedData(aggregateData(dataS))
+                    }
+                })
+                .catch((err) => err.message)
+        }
 
+
+        return unsubscribe;
+    }, [])
+
+    function checkColor(data: any) {
+        //TODO the larger usage should be bigger
+        switch (data.type) {
+            case 'food & Drinks':
+                return 'hsl(var(--chart-1))'
+                break
+            case "shopping":
+                return 'hsl(var(--chart-2))'
+                break
+            case "transportation":
+                return 'hsl(var(--chart-3))'
+                break;
+            case "entertainment":
+                return 'hsl(var(--chart-4))'
+                break;
+            case "utilities":
+                return 'hsl(var(--chart-5))'
+                break
+            case "other":
+                //TODO add another color 
+                return 'hsl(var(--chart-3))'
+                break
+
+        }
+    }
+
+    const aggregateData = (dataV: Expenses): AggregatedData[] => {
+        const aggregatedData: Record<string, AggregatedData> = {};
+
+        dataV.forEach(item => {
+            const type = item.type;
+            const sum = item.sum;
+            if (aggregatedData[type])
+                aggregatedData[type].sum += sum;
+            else {
+                aggregatedData[type] = {
+                    type: type,
+                    sum: sum,
+                    color: checkColor(item)
+                };
+            }
+        });
+        return Object.values(aggregatedData);
+    };
     return (
         <div className="min-h-screen p-3 md:p-8 min-w-fit">
             <div className="max-w-4xl mx-auto">
@@ -43,29 +118,33 @@ export default function Dashboard() {
                             <CardTitle>Spending Overview</CardTitle>
                             <CardDescription >Your expenses by category</CardDescription>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent>{dataV.length > 1
+                            ?
+
                             <ChartContainer
-                                config={Object.fromEntries(data.map(item => [item.name.toLowerCase(), { label: item.name, color: item.color }]))}
+                                config={Object.fromEntries(dataV.map(item => [item.type.toLowerCase(), { label: item.type }]))}
                                 className="h-[200px] mt-5"
                             >
                                 <PieChart>
                                     <Pie
-                                        data={data}
-                                        dataKey="value"
-                                        nameKey="name"
+                                        data={aggregatedData}
+                                        dataKey="sum"
+                                        nameKey="type"
                                         cx="50%"
                                         cy="50%"
                                         outerRadius="75%"
-                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                        label={({ type, percent }) => `${type} ${(percent * 100).toFixed(0)}%`}
                                         labelLine={false}
                                     >
-                                        {data.map((entry, index) => (
+                                        {aggregatedData?.map((entry, index) => (
                                             <Cell key={`cell-${index}`} fill={entry.color} />
                                         ))}
                                     </Pie>
                                     <ChartTooltip content={<ChartTooltipContent />} />
                                 </PieChart>
                             </ChartContainer>
+                            : <Spinner />
+                        }
                         </CardContent>
                     </Card>
 
@@ -94,7 +173,7 @@ export default function Dashboard() {
                                         <p className="font-medium">{transaction.description}</p>
                                         <p className="text-sm text-gray-500">{transaction.date}</p>
                                     </div>
-                                    <p className="font-semibold">${transaction.amount.toFixed(2)}</p>
+                                    <p className="font-semibold">${transaction.sum.toFixed(2)}</p>
                                 </li>
                             ))}
                         </ul>
