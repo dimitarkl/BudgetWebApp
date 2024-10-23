@@ -13,44 +13,44 @@ import LandingPage from '@/components/home/LandingPage'
 import NotFoundPage from './not-found/NotFound'
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(auth.currentUser);
-  const navigate = useNavigate()
+	const [loggedIn, setLoggedIn] = useState(auth.currentUser);
+	const navigate = useNavigate()
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => setLoggedIn(user));
-    return () => unsubscribe();
-  }, [])
-  const logout = async () => {
-    try {
-      await auth.signOut();
-      navigate('/')
-    } catch (error) {
-      console.error('Logout error: ', error);
-    }
-  }
-  return (
-    <UserContext.Provider value={loggedIn}>
-      <ThemeProvider defaultTheme="dark" >
-        <Header logout={logout} />
-        <Routes>
-          {loggedIn
-            ? <Route path='/' element={<Dashboard />} />
-            : <Route path='/' element={<LandingPage />} />}
-          <Route path='/login' element=
-            {
-              <AuthGuard user={loggedIn} ><Login /></AuthGuard>
-            }
-          />
-          <Route path='/register' element=
-            {
-              <AuthGuard user={loggedIn} ><Register /></AuthGuard>
-            }
-          />
-          <Route path='/*' element={<NotFoundPage />} />
-        </Routes>
-      </ThemeProvider>
-    </UserContext.Provider>
-  )
+	useEffect(() => {
+		const unsubscribe = auth.onAuthStateChanged((user) => setLoggedIn(user));
+		return () => unsubscribe();
+	}, [])
+	const logout = async () => {
+		try {
+			await auth.signOut();
+			navigate('/')
+		} catch (error) {
+			console.error('Logout error: ', error);
+		}
+	}
+	return (
+		<UserContext.Provider value={loggedIn}>
+			<ThemeProvider defaultTheme="dark" >
+				<Header logout={logout} />
+				<Routes>
+					{loggedIn
+						? <Route path='/' element={<Dashboard />} />
+						: <Route path='/' element={<LandingPage />} />}
+					<Route path='/login' element=
+						{
+							<AuthGuard user={loggedIn} ><Login /></AuthGuard>
+						}
+					/>
+					<Route path='/register' element=
+						{
+							<AuthGuard user={loggedIn} ><Register /></AuthGuard>
+						}
+					/>
+					<Route path='/*' element={<NotFoundPage />} />
+				</Routes>
+			</ThemeProvider>
+		</UserContext.Provider>
+	)
 }
 
 export default App

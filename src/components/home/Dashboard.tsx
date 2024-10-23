@@ -99,17 +99,17 @@ export default function Dashboard() {
         return Object.values(aggregatedData);
     };
     return (
-        <div className="min-h-screen p-3 md:p-8 min-w-fit">
-            <div className="max-w-4xl mx-auto">
+        <div className="min-h-screen p-4 md:p-8">
+            <div className="max-w-4xl w-full mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <div>
-                        <h1 className="text-3xl font-bold">BudgetWebApp</h1>
+                        <h1 className="text-2xl font-bold ">BudgetWebApp</h1>
                         <p className="text-gray-400">Your personal finance tracker</p>
                     </div>
                     <ExpenseEntry />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <Card>
                         <CardHeader>
                             <CardTitle>Spending Overview</CardTitle>
@@ -120,7 +120,7 @@ export default function Dashboard() {
 
                             <ChartContainer
                                 config={Object.fromEntries(dataV.map(item => [item.type.toLowerCase(), { label: item.type }]))}
-                                className="h-[200px] mt-5"
+                                className="mt-5"
                             >
                                 <PieChart>
                                     <Pie
@@ -167,7 +167,7 @@ export default function Dashboard() {
                             {recentTransactions.map((transaction) => (
                                 <li key={transaction.id} className="py-4 flex justify-between items-center">
                                     <div>
-                                        <p className="font-medium">{transaction.description
+                                        <p className="font-medium truncate">{transaction.description
                                             ? transaction.description
                                             : 'No data'
                                         }</p>

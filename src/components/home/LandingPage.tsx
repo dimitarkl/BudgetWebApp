@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 export default function LandingPage() {
     return (
-        <section className="flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
+        <section className="flex flex-col items-center justify-center min-h-screen ">
             <div className="container px-4 md:px-6 grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
                 <div className="flex flex-col justify-center space-y-6">
                     <div className="space-y-4">
