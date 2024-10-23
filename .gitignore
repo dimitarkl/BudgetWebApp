@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 # I don’t want to show my secrets
 /src/lib/firebaseConfig.ts
+.firebase
