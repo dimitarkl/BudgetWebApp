@@ -22,30 +22,26 @@ type AggregatedData = {
     color: string | undefined;
 };
 export default function Dashboard() {
-    const [data, setData] = useState<Expenses>()
     const [totalSpending, setTotalSpending] = useState(0)
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
     const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
     useEffect(() => {
-        //TODO Update on getting data
-        const unsubscribe = () => {
-            getExpenses()
-                .then((response: Expenses | Error) => {
-                    if (!(response instanceof Error)) {
-                        setData(response);
-                        //TODO monthly spending
-                        const spending = response.reduce((sum, item) => sum + item.sum, 0)
-                        setTotalSpending(spending)
-                        setAggregatedData(aggregateData(response))
-                        setRecentTransactions(response.reverse().slice(0, 5))
-                    }
-                })
-                .catch((err) => err.message)
-        }
+        const fetchData = async () => {
+            try {
+                const response = await getExpenses(1);
+                if (!(response instanceof Error)) {
+                    const spending = response.reduce((sum, item) => sum + item.sum, 0);
+                    setTotalSpending(spending);
+                    setAggregatedData(aggregateData(response));
+                    setRecentTransactions(response.reverse().slice(0, 5));
+                }
+            } catch (error) {
+                console.error('Error fetching data:');
+            }
+        };
 
-
-        return unsubscribe;
-    }, [])
+        fetchData();
+    }, []);
 
     function checkColor(data: any) {
         //TODO the larger usage should be bigger
@@ -108,33 +104,34 @@ export default function Dashboard() {
                             <CardTitle>Spending Overview</CardTitle>
                             <CardDescription >Your expenses by category</CardDescription>
                         </CardHeader>
-                        <CardContent>{data
-                            ?
+                        <CardContent>
+                            {aggregatedData
+                                ?
 
-                            <ChartContainer
-                                config={Object.fromEntries(data.map(item => [item.type.toLowerCase(), { label: item.type }]))}
-                                className="mt-5"
-                            >
-                                <PieChart>
-                                    <Pie
-                                        data={aggregatedData}
-                                        dataKey="sum"
-                                        nameKey="type"
-                                        cx="50%"
-                                        cy="50%"
-                                        outerRadius="75%"
-                                        label={({ type, percent }) => `${type} ${(percent * 100).toFixed(0)}%`}
-                                        labelLine={false}
-                                    >
-                                        {aggregatedData?.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Pie>
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                </PieChart>
-                            </ChartContainer>
-                            : <Spinner />
-                        }
+                                <ChartContainer
+                                    config={Object.fromEntries(aggregatedData.map(item => [item.type.toLowerCase(), { label: item.type }]))}
+                                    className="mt-5"
+                                >
+                                    <PieChart>
+                                        <Pie
+                                            data={aggregatedData}
+                                            dataKey="sum"
+                                            nameKey="type"
+                                            cx="50%"
+                                            cy="50%"
+                                            outerRadius="75%"
+                                            label={({ type, percent }) => `${type} ${(percent * 100).toFixed(0)}%`}
+                                            labelLine={false}
+                                        >
+                                            {aggregatedData?.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                            ))}
+                                        </Pie>
+                                        <ChartTooltip content={<ChartTooltipContent />} />
+                                    </PieChart>
+                                </ChartContainer>
+                                : <Spinner />
+                            }
                         </CardContent>
                     </Card>
 
