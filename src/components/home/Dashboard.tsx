@@ -22,29 +22,22 @@ type AggregatedData = {
     color: string | undefined;
 };
 export default function Dashboard() {
-    const [dataV, setDataV] = useState<Expenses>([{
-        id: '',
-        userId: '',
-        createdAt: '',
-        sum: 0,
-        type: '',
-        description: '',
-    }])
+    const [data, setData] = useState<Expenses>()
     const [totalSpending, setTotalSpending] = useState(0)
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
     const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
     useEffect(() => {
-        //TODO Update on sending data
+        //TODO Update on getting data
         const unsubscribe = () => {
             getExpenses()
-                .then((dataS: Expenses | Error) => {
-                    if (!(dataS instanceof Error)) {
-                        setDataV(dataS);
+                .then((response: Expenses | Error) => {
+                    if (!(response instanceof Error)) {
+                        setData(response);
                         //TODO monthly spending
-                        const spending = dataS.reduce((sum, item) => sum + item.sum, 0)
+                        const spending = response.reduce((sum, item) => sum + item.sum, 0)
                         setTotalSpending(spending)
-                        setAggregatedData(aggregateData(dataS))
-                        setRecentTransactions(dataS.reverse().slice(0, 5))
+                        setAggregatedData(aggregateData(response))
+                        setRecentTransactions(response.reverse().slice(0, 5))
                     }
                 })
                 .catch((err) => err.message)
@@ -80,10 +73,10 @@ export default function Dashboard() {
         }
     }
 
-    const aggregateData = (dataV: Expenses): AggregatedData[] => {
+    const aggregateData = (data: Expenses): AggregatedData[] => {
         const aggregatedData: Record<string, AggregatedData> = {};
 
-        dataV.forEach(item => {
+        data.forEach(item => {
             const type = item.type;
             const sum = item.sum;
             if (aggregatedData[type])
@@ -115,11 +108,11 @@ export default function Dashboard() {
                             <CardTitle>Spending Overview</CardTitle>
                             <CardDescription >Your expenses by category</CardDescription>
                         </CardHeader>
-                        <CardContent>{dataV.length > 1
+                        <CardContent>{data
                             ?
 
                             <ChartContainer
-                                config={Object.fromEntries(dataV.map(item => [item.type.toLowerCase(), { label: item.type }]))}
+                                config={Object.fromEntries(data.map(item => [item.type.toLowerCase(), { label: item.type }]))}
                                 className="mt-5"
                             >
                                 <PieChart>

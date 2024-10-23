@@ -33,6 +33,11 @@ export default function Header({
                     ?
                     <>
                         <NavigationMenuItem>
+                            <Link to="/spendings" className={navigationMenuTriggerStyle()}>
+                                Spendings
+                            </Link>
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
                             <Link to="/" onClick={logout} className={navigationMenuTriggerStyle()}>
                                 Logout
                             </Link>

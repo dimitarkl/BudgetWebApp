@@ -11,6 +11,8 @@ import AuthGuard from './route-guard/AuthGuard'
 import Dashboard from './components/home/Dashboard'
 import LandingPage from '@/components/home/LandingPage'
 import NotFoundPage from './not-found/NotFound'
+import RouteGuard from './route-guard/RouteGuard'
+import AllSpendingsPage from './components/all-spending/AllSpendingPage'
 
 function App() {
 	const [loggedIn, setLoggedIn] = useState(auth.currentUser);
@@ -44,6 +46,11 @@ function App() {
 					<Route path='/register' element=
 						{
 							<AuthGuard user={loggedIn} ><Register /></AuthGuard>
+						}
+					/>
+					<Route path='/spendings' element=
+						{
+							<RouteGuard user={loggedIn} ><AllSpendingsPage /></RouteGuard>
 						}
 					/>
 					<Route path='/*' element={<NotFoundPage />} />
