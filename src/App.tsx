@@ -10,6 +10,7 @@ import UserContext from './components/contexts/UserContext'
 import AuthGuard from './route-guard/AuthGuard'
 import Dashboard from './components/home/Dashboard'
 import LandingPage from '@/components/home/LandingPage'
+import NotFoundPage from './not-found/NotFound'
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(auth.currentUser);
@@ -45,6 +46,7 @@ function App() {
               <AuthGuard user={loggedIn} ><Register /></AuthGuard>
             }
           />
+          <Route path='/*' element={<NotFoundPage />} />
         </Routes>
       </ThemeProvider>
     </UserContext.Provider>
