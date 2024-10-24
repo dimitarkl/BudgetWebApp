@@ -1,5 +1,5 @@
 import { auth, db } from "@/lib/firebase"
-import { collection, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from "firebase/firestore"
 
 type FetchData = {
     id: string,
@@ -59,6 +59,14 @@ const getExpenses = async (months: number) => {
         throw err instanceof Error ? err : new Error(String(err));
     }
 }
+const deleteExpense = async (id: string) => {
+    try {
+        await deleteDoc(doc(db, "expenses", id));
+    } catch (err) {
+        throw err instanceof Error ? err : new Error(String(err));
+    }
+
+}
 function formatServerTimestamp(serverTimestamp: Timestamp) {
     const date = serverTimestamp.toDate()
 
@@ -71,5 +79,6 @@ function formatServerTimestamp(serverTimestamp: Timestamp) {
 
 export {
     createExpense,
-    getExpenses
+    getExpenses,
+    deleteExpense,
 }

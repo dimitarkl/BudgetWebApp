@@ -1,3 +1,4 @@
+import { deleteExpense } from "@/api/expenses";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,8 +18,9 @@ type Props = {
 
 export default function DeleteExpense({ id }: Props) {
     function handleDelete() {
-
+        deleteExpense(id)
     }
+
     return (
         <>
             <AlertDialog>
@@ -31,8 +33,8 @@ export default function DeleteExpense({ id }: Props) {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete your
-                            account and remove your data from our servers.
+                            This action cannot be undone.
+                            This will permanently delete this expense.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
