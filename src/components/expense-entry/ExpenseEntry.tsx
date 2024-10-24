@@ -19,7 +19,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import ExpenseType from "./expense-type/ExpenseType"
-import { useContext, useEffect, useState } from "react"
+import { useContext, useState } from "react"
 import { createExpense, editExpense } from "@/api/expenses"
 import UserContext from "../contexts/UserContext"
 import { isError } from "@/lib/errorCheck"

@@ -24,7 +24,7 @@ export default function AllSpendingsPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
     const [spendingData, setSpendingData] = useState<Expenses>()
     const [totalSpending, setTotalSpending] = useState(0)
-    const currency = '$'
+    const currency = 'BGN'
 
     useEffect(() => {
         const fetchData = async () => {
@@ -72,7 +72,7 @@ export default function AllSpendingsPage() {
                         <CardDescription >For the last {selectedPeriod} months</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold ">{currency}{totalSpending.toFixed(2)}</p>
+                        <p className="text-3xl font-bold ">{totalSpending.toFixed(2)} {currency}</p>
                     </CardContent>
                 </Card>
 
@@ -96,8 +96,8 @@ export default function AllSpendingsPage() {
                                     {spendingData.map((expense, index) => (
                                         <TableRow key={index}>
                                             <TableCell className="font-medium ">{(expense.createdAt)}</TableCell>
-                                            <TableCell >{expense.type}</TableCell>
-                                            <TableCell className="text-right ">{currency}{expense.sum.toFixed(2)}</TableCell>
+                                            <TableCell >{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
+                                            <TableCell className="text-right ">{expense.sum.toFixed(2)}</TableCell>
                                             <TableCell className="text-right">
                                                 <AllSpendingDetails currency={currency} expense={expense} />
                                             </TableCell>

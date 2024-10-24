@@ -10,6 +10,7 @@ import { Spinner } from "../ui/spinner"
 import { Button } from "../ui/button"
 import { DialogTrigger } from "../ui/dialog"
 import { Dialog } from "@radix-ui/react-dialog"
+import { PlusCircle } from "lucide-react"
 
 type Expenses = {
     id: string,
@@ -28,6 +29,7 @@ export default function Dashboard() {
     const [totalSpending, setTotalSpending] = useState(0)
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
     const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
+    const currency = "BGN"
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -101,7 +103,9 @@ export default function Dashboard() {
                     <div className="">
                         <Dialog>
                             <DialogTrigger asChild>
+
                                 <Button className="bg-primary hover:bg-primary/90">
+                                    <PlusCircle />
                                     Add Expense
                                 </Button>
                             </DialogTrigger>
@@ -154,7 +158,7 @@ export default function Dashboard() {
                             <CardDescription>Your expenses this month</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-4xl font-bold">${totalSpending.toFixed(2)}</p>
+                            <p className="text-4xl font-bold">{totalSpending.toFixed(2)} {currency}</p>
                             <p className="text-sm text-gray-500 mt-2">Total spent across all categories</p>
                         </CardContent>
                     </Card>
