@@ -7,11 +7,11 @@ import ThemeProvider from "@/components/ui/theme-provider"
 import Login from './components/login/Login'
 import Register from './components/register/Register'
 import UserContext from './components/contexts/UserContext'
-import AuthGuard from './route-guard/AuthGuard'
+import AuthGuard from './components/route-guard/AuthGuard'
 import Dashboard from './components/home/Dashboard'
 import LandingPage from '@/components/home/LandingPage'
-import NotFoundPage from './not-found/NotFound'
-import RouteGuard from './route-guard/RouteGuard'
+import NotFoundPage from './components/not-found/NotFound'
+import RouteGuard from './components/route-guard/RouteGuard'
 import AllSpendingsPage from './components/all-spending/AllSpendingPage'
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
 							<RouteGuard user={loggedIn} ><AllSpendingsPage /></RouteGuard>
 						}
 					/>
-					<Route path='/*' element={<NotFoundPage />} />
+					<Route path='*' element={<NotFoundPage />} />
 				</Routes>
 			</ThemeProvider>
 		</UserContext.Provider>

@@ -15,7 +15,6 @@ import {
 import { getExpenses } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import { Info } from "lucide-react"
-import { time } from "console"
 type Period = 1 | 3 | 6 | 12;
 
 type Expenses = {
