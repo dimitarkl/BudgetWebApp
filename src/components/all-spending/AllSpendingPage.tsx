@@ -4,17 +4,9 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
 import { getExpenses } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
-import { Info } from "lucide-react"
+import AllSpendingDetails from "./all-spending-details/AllSpendingDetails"
 type Period = 1 | 3 | 6 | 12;
 
 type Expenses = {
@@ -101,46 +93,13 @@ export default function AllSpendingsPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {spendingData.map((expense: any, index: any) => (
+                                    {spendingData.map((expense, index) => (
                                         <TableRow key={index}>
                                             <TableCell className="font-medium ">{(expense.createdAt)}</TableCell>
                                             <TableCell >{expense.type}</TableCell>
                                             <TableCell className="text-right ">{currency}{expense.sum.toFixed(2)}</TableCell>
                                             <TableCell className="text-right">
-                                                <Dialog>
-                                                    <DialogTrigger asChild>
-                                                        <Button variant="ghost" size="icon">
-                                                            <Info className="h-4 w-4" />
-                                                            <span className="sr-only">View details</span>
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent className="sm:max-w-[425px] ">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Expense Details</DialogTitle>
-                                                            <DialogDescription >
-                                                                Full information about this expense.
-                                                            </DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="grid gap-4 py-4">
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <span className="font-bold">Date:</span>
-                                                                <span className="col-span-3">{expense.createdAt}</span>
-                                                            </div>
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <span className="font-bold">Category:</span>
-                                                                <span className="col-span-3">{expense.type}</span>
-                                                            </div>
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <span className="font-bold">Amount:</span>
-                                                                <span className="col-span-3">{currency}{expense.sum.toFixed(2)}</span>
-                                                            </div>
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <span className="font-bold">Description:</span>
-                                                                <span className="col-span-3">{expense.description}</span>
-                                                            </div>
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
+                                                <AllSpendingDetails currency={currency} expense={expense} />
                                             </TableCell>
                                         </TableRow>
                                     ))}
