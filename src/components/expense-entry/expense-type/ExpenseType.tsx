@@ -21,7 +21,7 @@ import { useEffect, useState } from "react"
 
 const frameworks = [
     {
-        value: "food",
+        value: "food & Drinks",
         label: "Food & Drinks",
     },
     {

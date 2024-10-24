@@ -12,20 +12,28 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 type Props = {
     id: string
 }
 
 export default function DeleteExpense({ id }: Props) {
-    function handleDelete() {
-        deleteExpense(id)
+    const navigate = useNavigate()
+    async function handleDelete() {
+        await deleteExpense(id)
+        navigate('/')
     }
 
     return (
         <>
             <AlertDialog>
                 <AlertDialogTrigger asChild>
-                    <Button className="bg-gray-600 hover:bg-primary/90 min-w-36  mr-5">
+                    <Button
+                        variant="destructive"
+                        className="w-full sm:w-auto"
+                    >
+                        <Trash2 className="w-4 h-4 mr-2" />
                         Delete
                     </Button>
                 </AlertDialogTrigger>

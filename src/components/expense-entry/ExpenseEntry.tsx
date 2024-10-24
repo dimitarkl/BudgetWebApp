@@ -63,7 +63,7 @@ export function ExpenseEntry({
         },
     })
 
-    function onSubmit(data: z.infer<typeof formSchema>) {
+    async function onSubmit(data: z.infer<typeof formSchema>) {
 
         switch (inputType) {
             case 'Create':
@@ -73,8 +73,12 @@ export function ExpenseEntry({
                         setErrorMessage(response.message)
                         return
                     } else {
-                        form.reset()
-                        navigate('/')
+
+                        setTimeout(() => {
+                            form.reset()
+                            navigate(0)
+                        }, 400)
+
                     }
                 }
                 break;

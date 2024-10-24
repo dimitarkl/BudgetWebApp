@@ -7,7 +7,7 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
-import { Info } from "lucide-react";
+import { Edit, Info } from "lucide-react";
 import DeleteExpense from "./delete-expense/DeleteExpense";
 import { ExpenseEntry } from "@/components/expense-entry/ExpenseEntry";
 
@@ -66,11 +66,15 @@ export default function AllSpendingDetails(
                             <span className="col-span-3 ml-2 truncate">{expense.description}</span>
                         </div>
                     </div>
-                    <div>
+                    <div className="flex justify-end space-x-4 mt-6">
                         <DeleteExpense id={expense.id} />
                         <Dialog>
                             <DialogTrigger asChild>
-                                <Button className="bg-primary hover:bg-primary/90">
+                                <Button
+                                    variant="default"
+                                    className="w-full sm:w-auto"
+                                >
+                                    <Edit className="w-4 h-4 mr-2" />
                                     Edit
                                 </Button>
                             </DialogTrigger>
