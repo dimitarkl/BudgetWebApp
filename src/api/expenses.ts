@@ -22,7 +22,7 @@ const createExpense = (userId: string, sum: string, type: string, description?: 
     }
     const docCol = doc(collection(db, 'expenses'))
     setDoc(docCol, body).then(() => {
-        console.log('Data sent to Firebase Realtime Database!');
+        console.log('Data sent ');
     }).catch((err) => {
         return err instanceof Error ? err : new Error(String(err));
     })
@@ -93,6 +93,18 @@ function formatServerTimestamp(serverTimestamp: Timestamp) {
     const day = String(date.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+}
+function savePreference(userId: string, currencyPref: string) {
+    const body = {
+        userId,
+        currencyPref
+    }
+    const docCol = doc(collection(db, 'user-preferences'))
+    setDoc(docCol, body).then(() => {
+        console.log('Data sent');
+    }).catch((err) => {
+        return err instanceof Error ? err : new Error(String(err));
+    })
 }
 
 export {

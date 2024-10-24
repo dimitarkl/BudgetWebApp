@@ -54,8 +54,7 @@ export default function AllSpendingDetails(
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <span className="font-bold">Category:</span>
-                            {/* TODO to upperCase */}
-                            <span className="col-span-3">{expense.type}</span>
+                            <span className="col-span-3">{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</span>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <span className="font-bold">Amount:</span>

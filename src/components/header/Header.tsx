@@ -9,6 +9,7 @@ import {
 import { ModeToggle } from "../mode-toggle/Mode-Toggle"
 import { useContext } from "react"
 import UserContext from "../contexts/UserContext"
+import CurrencySelector from "../currency-selector/CurrencySelector"
 
 type Props = {
     logout: () => Promise<void>
@@ -23,6 +24,9 @@ export default function Header({
             <NavigationMenuList>
                 <NavigationMenuItem>
                     <ModeToggle />
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <CurrencySelector />
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                     <Link to="/" className={navigationMenuTriggerStyle()}>
