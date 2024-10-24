@@ -1,5 +1,5 @@
 import { auth, db } from "@/lib/firebase"
-import { collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, where } from "firebase/firestore"
+import { collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from "firebase/firestore"
 
 type FetchData = {
     id: string,
@@ -67,6 +67,24 @@ const deleteExpense = async (id: string) => {
     }
 
 }
+
+const editExpense = async (id: string, userId: string, sum: string, type: string, description?: string) => {
+    const body = {
+        userId,
+        sum,
+        type,
+        description,
+    }
+    const ref = doc(db, 'expenses', id)
+    try {
+        await updateDoc(ref, body)
+        console.log('Data Sent')
+    }
+    catch (err) {
+        return err instanceof Error ? err : new Error(String(err));
+    }
+}
+
 function formatServerTimestamp(serverTimestamp: Timestamp) {
     const date = serverTimestamp.toDate()
 
@@ -81,4 +99,5 @@ export {
     createExpense,
     getExpenses,
     deleteExpense,
+    editExpense
 }

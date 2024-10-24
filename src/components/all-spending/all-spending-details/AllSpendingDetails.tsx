@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Info } from "lucide-react";
 import DeleteExpense from "./delete-expense/DeleteExpense";
+import { ExpenseEntry } from "@/components/expense-entry/ExpenseEntry";
 
 
 type Props = {
@@ -53,6 +54,7 @@ export default function AllSpendingDetails(
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <span className="font-bold">Category:</span>
+                            {/* TODO to upperCase */}
                             <span className="col-span-3">{expense.type}</span>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
@@ -66,9 +68,14 @@ export default function AllSpendingDetails(
                     </div>
                     <div>
                         <DeleteExpense id={expense.id} />
-                        <Button className="bg-primary hover:bg-primary/90  min-w-36  ml-9">
-                            Edit
-                        </Button>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="bg-primary hover:bg-primary/90">
+                                    Edit
+                                </Button>
+                            </DialogTrigger>
+                            <ExpenseEntry expense={expense} inputType="Edit" />
+                        </Dialog>
                     </div>
                 </DialogContent>
             </Dialog >

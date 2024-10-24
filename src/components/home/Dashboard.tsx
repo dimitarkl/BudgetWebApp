@@ -7,6 +7,9 @@ import { ExpenseEntry } from "../expense-entry/ExpenseEntry"
 import { getExpenses } from "@/api/expenses"
 import { useEffect, useState } from "react"
 import { Spinner } from "../ui/spinner"
+import { Button } from "../ui/button"
+import { DialogTrigger } from "../ui/dialog"
+import { Dialog } from "@radix-ui/react-dialog"
 
 type Expenses = {
     id: string,
@@ -95,7 +98,17 @@ export default function Dashboard() {
                         <h1 className="text-2xl font-bold ">BudgetWebApp</h1>
                         <p className="text-gray-400">Your personal finance tracker</p>
                     </div>
-                    <ExpenseEntry />
+                    <div className="">
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <Button className="bg-primary hover:bg-primary/90">
+                                    Add Expense
+                                </Button>
+                            </DialogTrigger>
+                            <ExpenseEntry inputType="Create" />
+                        </Dialog>
+                    </div>
+
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

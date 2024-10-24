@@ -1,12 +1,10 @@
 import { Button } from "@/components/ui/button"
 import {
-    Dialog,
     DialogContent,
     DialogDescription,
     DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { useForm } from 'react-hook-form'
@@ -20,14 +18,13 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { ExpenseType } from "./expense-type/ExpenseType"
-import { useContext, useState } from "react"
-import { createExpense } from "@/api/expenses"
+import ExpenseType from "./expense-type/ExpenseType"
+import { useContext, useEffect, useState } from "react"
+import { createExpense, editExpense } from "@/api/expenses"
 import UserContext from "../contexts/UserContext"
 import { isError } from "@/lib/errorCheck"
 import { useNavigate } from "react-router-dom"
 import { Error } from "../error/Error"
-import { PlusCircle } from "lucide-react"
 
 const formSchema = z.object({
     //TODO add validation
@@ -36,8 +33,23 @@ const formSchema = z.object({
     }),
     description: z.string().optional()
 })
+type Props = {
+    expense?: {
+        id: string;
+        userId: string;
+        createdAt: string;
+        sum: number;
+        type: string;
+        description?: string;
+    },
+    inputType: 'Create' | 'Edit'
+}
 
-export function ExpenseEntry() {
+
+export function ExpenseEntry({
+    expense,
+    inputType
+}: Props) {
     const [errorMessage, setErrorMessage] = useState('')
     const [type, setType] = useState('')
     const navigate = useNavigate()
@@ -45,22 +57,39 @@ export function ExpenseEntry() {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            sum: "",
-            description: "",
+            sum: expense ? String(expense?.sum) : '',
+            description: expense ? expense?.description : '',
 
         },
     })
 
     function onSubmit(data: z.infer<typeof formSchema>) {
-        if (type && user?.uid) {
-            const response = createExpense(user?.uid, data.sum, type, data.description)
-            if (isError(response)) {
-                setErrorMessage(response.message)
-                return
-            } else {
-                form.reset()
-                navigate('/')
-            }
+
+        switch (inputType) {
+            case 'Create':
+                if (type && user?.uid) {
+                    const response = createExpense(user?.uid, data.sum, type, data.description)
+                    if (isError(response)) {
+                        setErrorMessage(response.message)
+                        return
+                    } else {
+                        form.reset()
+                        navigate('/')
+                    }
+                }
+                break;
+            case 'Edit':
+                if (type && user?.uid && expense) {
+                    const response = editExpense(expense.id, user?.uid, data.sum, type, data.description)
+                    if (isError(response)) {
+                        setErrorMessage(response.message)
+                        return
+                    } else {
+                        form.reset()
+                        navigate('/')
+                    }
+                }
+                break;
         }
     }
     function Type(currentValue: string) {
@@ -68,17 +97,8 @@ export function ExpenseEntry() {
     }
 
     return (
-
-        <Dialog>
-            <div className="">
-                <DialogTrigger asChild>
-                    <Button className="bg-primary hover:bg-primary/90">
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add Expense
-                    </Button>
-                </DialogTrigger>
-            </div>
-            <DialogContent className="min-w-fit">
+        <>
+            <DialogContent className="min-w-fit" >
                 <DialogHeader>
                     <DialogTitle>Expense</DialogTitle>
                     <DialogDescription>
@@ -100,7 +120,7 @@ export function ExpenseEntry() {
                                 </FormItem>
                             )}
                         />
-                        <ExpenseType type={Type} />
+                        <ExpenseType type={Type} expense={expense} />
 
                         <FormField
                             control={form.control}
@@ -123,7 +143,6 @@ export function ExpenseEntry() {
                 </Form>
                 <DialogFooter>
                 </DialogFooter>
-            </DialogContent>
-        </Dialog >
-    )
+            </DialogContent >
+        </>)
 }

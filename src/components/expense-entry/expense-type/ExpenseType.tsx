@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
@@ -18,6 +17,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import { useEffect, useState } from "react"
 
 const frameworks = [
     {
@@ -47,15 +47,33 @@ const frameworks = [
 
 type Props = {
     type: (data: string) => void,
+    expense?: {
+        id: string;
+        userId: string;
+        createdAt: string;
+        sum: number;
+        type: string;
+        description?: string;
+    },
 }
 
-export function ExpenseType(
+export default function ExpenseType(
     {
-        type
+        type,
+        expense
 
     }: Props) {
-    const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+    const [open, setOpen] = useState(false)
+    const [value, setValue] = useState("")
+    useEffect(() => {
+        const exists = () => {
+            if (expense) {
+                type(expense.type)
+                setValue(expense.type)
+            }
+        }
+        exists()
+    }, [])
     return (
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
