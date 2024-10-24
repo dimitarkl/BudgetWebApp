@@ -12,10 +12,11 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import { Info } from "lucide-react"
 import { getExpenses } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
-type Period = "1M" | "3M" | "6M" | "9M" | "1Y";
+import { Info } from "lucide-react"
+import { time } from "console"
+type Period = 1 | 3 | 6 | 12;
 
 type Expenses = {
     id: string,
@@ -26,37 +27,37 @@ type Expenses = {
     description?: string,
 }[]
 
-const timePeriods: Period[] = ["1M", "3M", "6M", "9M", "1Y"]
+const timePeriods: Period[] = [1, 3, 6, 12]
 
 export default function AllSpendingsPage() {
-    const [selectedPeriod, setSelectedPeriod] = useState<Period>("1M")
-    const [data, setData] = useState<Expenses>()
+    const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
+    const [spendingData, setSpendingData] = useState<Expenses>()
     const [totalSpending, setTotalSpending] = useState(0)
     const currency = '$'
 
     useEffect(() => {
-        const unsubscribe = () => {
-            getExpenses()
-                .then((response: Expenses | Error) => {
-                    if (!(response instanceof Error)) {
-                        setData(response);
-                        //TODO monthly spending
-                        setTotalSpending(response.reduce((sum, item) => sum + item.sum, 0))
-                    }
-                })
-                .catch((err) => err.message)
+        const fetchData = async () => {
+            try {
+                const response = await getExpenses(selectedPeriod);
+                if (!(response instanceof Error)) {
+                    setSpendingData(response);
+                    //TODO monthly spending
+                    setTotalSpending((response.reduce((sum, item) => sum + item.sum, 0)))
+                }
+            } catch (error) {
+                console.error('Error fetching data:');
+            }
+        };
+        fetchData()
+        return () => {
+            fetchData()
         }
-
-
-        return unsubscribe;
-    }, [])
-    const expenses: any = spendingData[selectedPeriod]
-
+    }, [selectedPeriod])
 
     return (
         <div className="min-h-screen  p-4">
             <div className="max-w-xl mx-auto">
-                <div className="text-center justify-center">
+                <div className="flextext-center justify-center">
                     <h1 className="text-5xl font-bold mb-2 ">All Spendings</h1>
                     <p className="text-gray-100">Everything you have spend</p>
                     <div className="flex flex-wrap gap-2 mb-6 mt-6">
@@ -77,7 +78,7 @@ export default function AllSpendingsPage() {
                 <Card className="mb-6">
                     <CardHeader>
                         <CardTitle >Total Spending</CardTitle>
-                        <CardDescription >For the last {selectedPeriod}</CardDescription>
+                        <CardDescription >For the last {selectedPeriod} months</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <p className="text-3xl font-bold ">{currency}{totalSpending.toFixed(2)}</p>
@@ -87,9 +88,9 @@ export default function AllSpendingsPage() {
                 <Card >
                     <CardHeader>
                         <CardTitle>All Expenses</CardTitle>
-                        <CardDescription >Detailed list of all expenses for the last {selectedPeriod}</CardDescription>
+                        <CardDescription >Detailed list of all expenses for the last {selectedPeriod} months</CardDescription>
                     </CardHeader>
-                    {data ?
+                    {spendingData ?
                         <CardContent>
                             <Table>
                                 <TableHeader>
@@ -101,7 +102,7 @@ export default function AllSpendingsPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {data.map((expense: any, index: any) => (
+                                    {spendingData.map((expense: any, index: any) => (
                                         <TableRow key={index}>
                                             <TableCell className="font-medium ">{(expense.createdAt)}</TableCell>
                                             <TableCell >{expense.type}</TableCell>
@@ -147,9 +148,9 @@ export default function AllSpendingsPage() {
                                 </TableBody>
                             </Table>
                         </CardContent>
-                        : <Spinner />}
+                        : <div><Spinner /></div>}
                 </Card>
             </div>
-        </div>
+        </div >
     )
 }

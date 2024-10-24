@@ -28,13 +28,19 @@ const createExpense = (userId: string, sum: string, type: string, description?: 
     })
 }
 
-const getExpenses = async () => {
-    let user: string;
-    //TODO add error handling
+const getExpenses = async (months: number) => {
+    let user: string;//TODO add error handling    
     if (auth.currentUser?.uid) user = auth.currentUser?.uid
     else return new Error('User Not Logged In')
-    const q = query(collection(db, 'expenses'), where('userId', '==', user));
+    const monthsAgo = new Date();
+    monthsAgo.setMonth(monthsAgo.getMonth() - months);
+    const monthsAgoTimestamp = Timestamp.fromDate(monthsAgo);
     try {
+        const q = query(
+            collection(db, 'expenses'),
+            where('userId', '==', user),
+            where('createdAt', '>=', monthsAgoTimestamp)
+        );
         const querySnapshot = await getDocs(q);
         const data: FetchData = []
         querySnapshot.forEach((doc) => {
@@ -49,8 +55,8 @@ const getExpenses = async () => {
             });
         });
         return data
-    } catch (error: any) {
-        throw new Error(error.message)
+    } catch (err: any) {
+        throw err instanceof Error ? err : new Error(String(err));
     }
 }
 function formatServerTimestamp(serverTimestamp: Timestamp) {
