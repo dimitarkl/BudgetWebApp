@@ -10,8 +10,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { savePreference } from '@/api/expenses'
+import { listenToUserPreference, savePreference } from '@/api/expenses'
 import UserContext from '../contexts/UserContext'
+import { error } from 'console'
+import { Currency } from 'firebase/analytics'
 
 const currencies = [
     { code: 'USD', symbol: '$' },
@@ -24,16 +26,31 @@ export default function CurrencySelector() {
     const user = useContext(UserContext)
 
     useEffect(() => {
-        //TODO make it work
-        const changeCurrency = async () => {
-            if (user)
-                try {
-                    savePreference(user?.uid, currency.code)
-                } catch (err) {
+        const fetchCurrency = async () => {
+            try {
+                const response = await listenToUserPreference();
+                const preferredCurrency = currencies.find((c) => c.code === response);
+                if (preferredCurrency) {
+                    setCurrency(preferredCurrency);
                 }
+            } catch (error) {
+                console.error('Error fetching user preference:', error);
+            }
+        };
+
+        fetchCurrency();
+    }, [currencies]);
+
+
+    const handleCurrencyChange = (newCurrency: {
+        code: string;
+        symbol: string;
+    }) => {
+        setCurrency(newCurrency);
+        if (user) {
+            savePreference(user.uid, newCurrency.code);
         }
-        changeCurrency()
-    }, [currency])
+    }
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -46,7 +63,7 @@ export default function CurrencySelector() {
                 {currencies.map((item) => (
                     <DropdownMenuItem
                         key={item.code}
-                        onClick={() => setCurrency(item)}
+                        onClick={() => handleCurrencyChange(item)}
                         className="flex items-center justify-between"
                     >
                         <span>
