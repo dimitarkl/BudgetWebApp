@@ -12,8 +12,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { listenToUserPreference, savePreference } from '@/api/expenses'
 import UserContext from '../contexts/UserContext'
-import { error } from 'console'
-import { Currency } from 'firebase/analytics'
 
 const currencies = [
     { code: 'USD', symbol: '$' },
@@ -39,7 +37,7 @@ export default function CurrencySelector() {
         };
 
         fetchCurrency();
-    }, [currencies]);
+    }, [currencies, user]);
 
 
     const handleCurrencyChange = (newCurrency: {
