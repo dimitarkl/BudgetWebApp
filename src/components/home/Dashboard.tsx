@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { ExpenseEntry } from "../expense-entry/ExpenseEntry"
-import { getExpenses } from "@/api/expenses"
+import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { useEffect, useState } from "react"
 import { Spinner } from "../ui/spinner"
 import { Button } from "../ui/button"
@@ -29,7 +29,7 @@ export default function Dashboard() {
     const [totalSpending, setTotalSpending] = useState(0)
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
     const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
-    const currency = "BGN"
+    const [currency, setCurrency] = useState('BGN')
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -47,6 +47,11 @@ export default function Dashboard() {
 
         fetchData();
     }, []);
+    //TODO Make it refresh
+    useEffect(() => {
+        listenToUserPreference()
+            .then((response) => setCurrency(response))
+    }, [])
 
     function checkColor(data: any) {
         //TODO the larger usage should be bigger

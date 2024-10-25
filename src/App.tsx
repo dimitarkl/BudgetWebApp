@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import Header from './components/header/Header'
-import ThemeProvider from "@/components/ui/theme-provider"
+import ThemeProvider from "@/components/contexts/theme-provider"
 import Login from './components/login/Login'
 import Register from './components/register/Register'
 import UserContext from './components/contexts/UserContext'
@@ -13,7 +13,6 @@ import LandingPage from '@/components/home/LandingPage'
 import NotFoundPage from './components/not-found/NotFound'
 import RouteGuard from './components/route-guard/RouteGuard'
 import AllSpendingsPage from './components/all-spending/AllSpendingPage'
-import { CurrencyProvider } from './components/contexts/CurrencyPrefContext'
 
 function App() {
 	const [loggedIn, setLoggedIn] = useState(auth.currentUser);
@@ -34,33 +33,33 @@ function App() {
 	return (
 
 		<UserContext.Provider value={loggedIn}>
-			<CurrencyProvider>
-				<ThemeProvider defaultTheme="dark" >
-					<Header logout={logout} />
-					<Routes>
-						{loggedIn
-							? <Route path='/' element={<Dashboard />} />
-							: <Route path='/' element={<LandingPage />} />}
-						<Route path='/login' element=
-							{
-								<AuthGuard user={loggedIn} ><Login /></AuthGuard>
-							}
-						/>
-						<Route path='/register' element=
-							{
-								<AuthGuard user={loggedIn} ><Register /></AuthGuard>
-							}
-						/>
-						<Route path='/spendings' element=
-							{
-								<RouteGuard user={loggedIn} ><AllSpendingsPage /></RouteGuard>
-							}
-						/>
-						<Route path='*' element={<NotFoundPage />} />
-					</Routes>
-				</ThemeProvider>
-			</CurrencyProvider>
-		</UserContext.Provider>
+
+			<ThemeProvider defaultTheme="dark" >
+				<Header logout={logout} />
+				<Routes>
+					{loggedIn
+						? <Route path='/' element={<Dashboard />} />
+						: <Route path='/' element={<LandingPage />} />}
+					<Route path='/login' element=
+						{
+							<AuthGuard user={loggedIn} ><Login /></AuthGuard>
+						}
+					/>
+					<Route path='/register' element=
+						{
+							<AuthGuard user={loggedIn} ><Register /></AuthGuard>
+						}
+					/>
+					<Route path='/spendings' element=
+						{
+							<RouteGuard user={loggedIn} ><AllSpendingsPage /></RouteGuard>
+						}
+					/>
+					<Route path='*' element={<NotFoundPage />} />
+				</Routes>
+			</ThemeProvider>
+
+		</UserContext.Provider >
 	)
 }
 

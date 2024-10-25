@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getExpenses } from "@/api/expenses"
+import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import AllSpendingDetails from "./all-spending-details/AllSpendingDetails"
 type Period = 1 | 3 | 6 | 12;
@@ -24,7 +24,7 @@ export default function AllSpendingsPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
     const [spendingData, setSpendingData] = useState<Expenses>()
     const [totalSpending, setTotalSpending] = useState(0)
-    const currency = 'BGN'
+    const [currency, setCurrency] = useState('BGN')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,6 +44,11 @@ export default function AllSpendingsPage() {
             fetchData()
         }
     }, [selectedPeriod])
+
+    useEffect(() => {
+        listenToUserPreference()
+            .then((response) => setCurrency(response))
+    }, [])
 
     return (
         <div className="min-h-screen  p-4">

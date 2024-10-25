@@ -1,6 +1,6 @@
 import { auth, db } from "@/lib/firebase"
-import { Unsubscribe } from "firebase/auth"
-import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from "firebase/firestore"
+
+import { collection, deleteDoc, doc, getDoc, getDocs, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from "firebase/firestore"
 
 type FetchData = {
     id: string,
@@ -105,7 +105,7 @@ function savePreference(userId: string, currencyPref: string) {
         console.log('Data sent');
         listenToUserPreference()
     }).catch((err) => {
-        throw err instanceof Error ? err : new Error(String(err));
+        console.log(`Eror: ${err instanceof Error ? err : new Error(String(err))}`)
     })
 }
 
