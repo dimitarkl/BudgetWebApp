@@ -1,5 +1,6 @@
 import { auth, db } from "@/lib/firebase"
-import { collection, deleteDoc, doc, getDocs, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from "firebase/firestore"
+import { Unsubscribe } from "firebase/auth"
+import { collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query, serverTimestamp, setDoc, Timestamp, updateDoc, where } from "firebase/firestore"
 
 type FetchData = {
     id: string,
@@ -102,13 +103,29 @@ function savePreference(userId: string, currencyPref: string) {
     const docCol = doc(db, 'user-preferences', userId)
     setDoc(docCol, body, { merge: true }).then(() => {
         console.log('Data sent');
+        listenToUserPreference()
     }).catch((err) => {
         throw err instanceof Error ? err : new Error(String(err));
     })
 }
 
-export {
+async function listenToUserPreference() {
+    let user: string;
+    if (auth.currentUser?.uid) user = auth.currentUser?.uid
+    else return new Error('User Not Logged In')
+    try {
+        const response = await getDoc(doc(db, 'user-preferences', user))
+        const data = response?.data();
+        return data?.currencyPref
 
+    } catch (err) {
+        throw err instanceof Error ? err : new Error(String(err));
+    }
+}
+
+
+export {
+    listenToUserPreference,
     createExpense,
     getExpenses,
     deleteExpense,
