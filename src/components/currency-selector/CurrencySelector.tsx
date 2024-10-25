@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Check, ChevronDown, CreditCard } from 'lucide-react'
+import { useContext, useEffect, useState } from 'react'
+import { Check, ChevronDown } from 'lucide-react'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +10,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { savePreference } from '@/api/expenses'
+import UserContext from '../contexts/UserContext'
 
 const currencies = [
     { code: 'USD', symbol: '$' },
@@ -19,7 +21,19 @@ const currencies = [
 
 export default function CurrencySelector() {
     const [currency, setCurrency] = useState(currencies[0])
+    const user = useContext(UserContext)
 
+    useEffect(() => {
+        //TODO make it work
+        const changeCurrency = async () => {
+            if (user)
+                try {
+                    savePreference(user?.uid, currency.code)
+                } catch (err) {
+                }
+        }
+        changeCurrency()
+    }, [currency])
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>

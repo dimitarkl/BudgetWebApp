@@ -99,17 +99,19 @@ function savePreference(userId: string, currencyPref: string) {
         userId,
         currencyPref
     }
-    const docCol = doc(collection(db, 'user-preferences'))
-    setDoc(docCol, body).then(() => {
+    const docCol = doc(db, 'user-preferences', userId)
+    setDoc(docCol, body, { merge: true }).then(() => {
         console.log('Data sent');
     }).catch((err) => {
-        return err instanceof Error ? err : new Error(String(err));
+        throw err instanceof Error ? err : new Error(String(err));
     })
 }
 
 export {
+
     createExpense,
     getExpenses,
     deleteExpense,
-    editExpense
+    editExpense,
+    savePreference
 }
