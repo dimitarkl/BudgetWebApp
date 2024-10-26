@@ -12,12 +12,16 @@ type FetchData = {
     description?: string,
 }[]
 
-const createExpense = (userId: string, sum: string, type: string, description?: string) => {
-    if (!description) description = ''
+const createExpense = (userId: string, sum: string, type: string, transactionType: string, description?: string,) => {
+    let amount: number = parseFloat(sum)
+    console.log(amount)
+    if (isNaN(amount)) return
+
+    if (transactionType === 'expense') amount = -amount
     const body = {
         userId,
         createdAt: serverTimestamp(),
-        sum,
+        sum: amount,
         type,
         description,
     }
@@ -50,12 +54,12 @@ const getExpenses = async (months: number) => {
                 id: doc.id,
                 userId: docRest.userId,
                 createdAt: formatServerTimestamp(docRest.createdAt),
-                sum: Number(docRest.sum),
+                sum: docRest.sum,
                 type: docRest.type,
                 description: docRest.description,
             });
         });
-        return data
+        return data.reverse()
     } catch (err: any) {
         throw err instanceof Error ? err : new Error(String(err));
     }

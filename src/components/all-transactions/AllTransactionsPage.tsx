@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
-import AllSpendingDetails from "./all-spending-details/AllSpendingDetails"
+import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
 type Period = 1 | 3 | 6 | 12;
 
 type Expenses = {
@@ -20,7 +20,7 @@ type Expenses = {
 
 const timePeriods: Period[] = [1, 3, 6, 12]
 
-export default function AllSpendingsPage() {
+export default function AllTransactionsPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
     const [spendingData, setSpendingData] = useState<Expenses>()
     const [totalSpending, setTotalSpending] = useState(0)
@@ -54,8 +54,8 @@ export default function AllSpendingsPage() {
         <div className="min-h-screen  p-4">
             <div className="max-w-xl mx-auto">
                 <div className="flextext-center justify-center">
-                    <h1 className="text-5xl font-bold mb-2 ">All Spendings</h1>
-                    <p className="text-gray-100">Everything you have spend</p>
+                    <h1 className="text-5xl font-bold mb-2 ">All Transactions</h1>
+                    <p className="text-gray-100">Everything you have spend and earned</p>
                     <div className="flex flex-wrap gap-2 mb-6 mt-6">
                         {timePeriods.map((period) => (
                             <Button
@@ -73,7 +73,7 @@ export default function AllSpendingsPage() {
 
                 <Card className="mb-6">
                     <CardHeader>
-                        <CardTitle >Total Spending</CardTitle>
+                        <CardTitle >Total Balance</CardTitle>
                         <CardDescription >For the last {selectedPeriod} months</CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -83,8 +83,8 @@ export default function AllSpendingsPage() {
 
                 <Card >
                     <CardHeader>
-                        <CardTitle>All Expenses</CardTitle>
-                        <CardDescription >Detailed list of all expenses for the last {selectedPeriod} months</CardDescription>
+                        <CardTitle>All Transactions</CardTitle>
+                        <CardDescription >Detailed list of all transactions for the last {selectedPeriod} months</CardDescription>
                     </CardHeader>
                     {spendingData ?
                         <CardContent>
@@ -100,11 +100,11 @@ export default function AllSpendingsPage() {
                                 <TableBody>
                                     {spendingData.map((expense, index) => (
                                         <TableRow key={index}>
-                                            <TableCell className="font-medium ">{(expense.createdAt)}</TableCell>
+                                            <TableCell className="font-small ">{(expense.createdAt)}</TableCell>
                                             <TableCell >{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
                                             <TableCell className="text-right ">{expense.sum.toFixed(2)}</TableCell>
                                             <TableCell className="text-right">
-                                                <AllSpendingDetails currency={currency} expense={expense} />
+                                                <AllTransactionDetails currency={currency} expense={expense} />
                                             </TableCell>
                                         </TableRow>
                                     ))}

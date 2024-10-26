@@ -8,8 +8,8 @@ import {
     DialogTrigger
 } from "@/components/ui/dialog";
 import { Edit, Info } from "lucide-react";
-import DeleteExpense from "./delete-expense/DeleteExpense";
-import { ExpenseEntry } from "@/components/expense-entry/ExpenseEntry";
+import DeleteTransaction from "./delete-transaction/DeleteTransaction";
+import ExpenseEntry from "@/components/expense-entry/ExpenseEntry";
 
 
 type Props = {
@@ -25,7 +25,7 @@ type Props = {
 
 
 }
-export default function AllSpendingDetails(
+export default function AllTransactionDetails(
     {
         currency,
         expense
@@ -66,7 +66,7 @@ export default function AllSpendingDetails(
                         </div>
                     </div>
                     <div className="flex justify-end space-x-4 mt-6">
-                        <DeleteExpense id={expense.id} />
+                        <DeleteTransaction id={expense.id} />
                         <Dialog>
                             <DialogTrigger asChild>
                                 <Button

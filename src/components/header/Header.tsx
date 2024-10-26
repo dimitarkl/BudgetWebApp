@@ -37,8 +37,8 @@ export default function Header({
                     ?
                     <>
                         <NavigationMenuItem>
-                            <Link to="/spendings" className={navigationMenuTriggerStyle()}>
-                                Spendings
+                            <Link to="/transactions" className={navigationMenuTriggerStyle()}>
+                                Transactions
                             </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>

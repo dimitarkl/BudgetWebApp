@@ -18,7 +18,7 @@ type Props = {
     id: string
 }
 
-export default function DeleteExpense({ id }: Props) {
+export default function DeleteTransaction({ id }: Props) {
     const navigate = useNavigate()
     async function handleDelete() {
         await deleteExpense(id)

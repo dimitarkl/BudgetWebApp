@@ -18,6 +18,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { useEffect, useState } from "react"
+import { Plus, Minus } from "lucide-react"
 
 const frameworks = [
     {
@@ -81,7 +82,7 @@ export default function ExpenseType(
                     variant="outline"
                     role="combobox"
                     aria-expanded={open}
-                    className="w-full max-w-md"
+                    className="w-full"
                 >
                     {value
                         ? frameworks.find((framework) => framework.value === value)?.label

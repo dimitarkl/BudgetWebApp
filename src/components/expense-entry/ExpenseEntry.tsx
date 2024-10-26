@@ -13,6 +13,7 @@ import * as z from 'zod'
 import {
     Form,
     FormControl,
+    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -25,13 +26,16 @@ import UserContext from "../contexts/UserContext"
 import { isError } from "@/lib/errorCheck"
 import { useNavigate } from "react-router-dom"
 import { Error } from "../error/Error"
+import { Switch } from "../ui/switch"
+import { Minus, Plus } from "lucide-react"
 
 const formSchema = z.object({
     //TODO add validation
     sum: z.string().min(1, {
         message: "Please enter a Number"
     }),
-    description: z.string().optional()
+    description: z.string().optional(),
+    transactionType: z.enum(["expense", "income"]),
 })
 type Props = {
     expense?: {
@@ -44,9 +48,7 @@ type Props = {
     },
     inputType: 'Create' | 'Edit'
 }
-
-
-export function ExpenseEntry({
+export default function ExpenseEntry({
     expense,
     inputType
 }: Props) {
@@ -58,26 +60,21 @@ export function ExpenseEntry({
         resolver: zodResolver(formSchema),
         defaultValues: {
             sum: expense ? String(expense?.sum) : '',
+            transactionType: 'expense',
             description: expense ? expense?.description : '',
 
         },
     })
 
     async function onSubmit(data: z.infer<typeof formSchema>) {
-
         switch (inputType) {
             case 'Create':
                 if (type && user?.uid) {
-                    const response = createExpense(user?.uid, data.sum, type, data.description)
+                    const response = createExpense(user?.uid, data.sum, type, data.transactionType, data.description)
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
                     } else {
-
-                        setTimeout(() => {
-                            form.reset()
-                            navigate(0)
-                        }, 400)
 
                     }
                 }
@@ -113,19 +110,47 @@ export function ExpenseEntry({
                     <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-4 ">
                         <FormField
                             control={form.control}
-                            name="sum"
+                            name="transactionType"
                             render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Sum Spend</FormLabel>
+                                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                    <div className="space-y-0.5">
+                                        <FormLabel className="text-base">Type</FormLabel>
+                                        <FormDescription>
+                                            Switch between expense and income
+                                        </FormDescription>
+                                    </div>
                                     <FormControl>
-                                        <Input type="number" {...field} />
+                                        <div className="flex items-center space-x-2">
+                                            {field.value === 'expense' ? (
+                                                <Minus className="h-4 w-4 text-destructive" />
+                                            ) : (
+                                                <Plus className="h-4 w-4 text-green-500" />
+                                            )}
+                                            <Switch
+                                                checked={field.value === 'income'}
+                                                onCheckedChange={(checked) => {
+                                                    field.onChange(checked ? 'income' : 'expense')
+                                                }}
+                                            />
+                                        </div>
                                     </FormControl>
-                                    <FormMessage />
                                 </FormItem>
                             )}
                         />
-                        <ExpenseType type={Type} expense={expense} />
-
+                        <div className=" flex flex-row">
+                            <FormField
+                                control={form.control}
+                                name="sum"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormControl>
+                                            <Input className='text-2xl' type="number" {...field} />
+                                        </FormControl>
+                                    </FormItem>
+                                )}
+                            />
+                            <ExpenseType type={Type} expense={expense} />
+                        </div>
                         <FormField
                             control={form.control}
                             name="description"

@@ -12,7 +12,7 @@ import Dashboard from './components/home/Dashboard'
 import LandingPage from '@/components/home/LandingPage'
 import NotFoundPage from './components/not-found/NotFound'
 import RouteGuard from './components/route-guard/RouteGuard'
-import AllSpendingsPage from './components/all-spending/AllSpendingPage'
+import AllTransactionsPage from './components/all-transactions/AllTransactionsPage'
 
 function App() {
 	const [loggedIn, setLoggedIn] = useState(auth.currentUser);
@@ -50,9 +50,9 @@ function App() {
 							<AuthGuard user={loggedIn} ><Register /></AuthGuard>
 						}
 					/>
-					<Route path='/spendings' element=
+					<Route path='/transactions' element=
 						{
-							<RouteGuard user={loggedIn} ><AllSpendingsPage /></RouteGuard>
+							<RouteGuard user={loggedIn} ><AllTransactionsPage /></RouteGuard>
 						}
 					/>
 					<Route path='*' element={<NotFoundPage />} />

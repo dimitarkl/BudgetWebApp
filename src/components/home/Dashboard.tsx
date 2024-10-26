@@ -3,7 +3,7 @@
 import { PieChart, Pie, Cell } from "recharts"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
-import { ExpenseEntry } from "../expense-entry/ExpenseEntry"
+import ExpenseEntry from "../expense-entry/ExpenseEntry"
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { useEffect, useState } from "react"
 import { Spinner } from "../ui/spinner"
@@ -84,7 +84,8 @@ export default function Dashboard() {
 
         data.forEach(item => {
             const type = item.type;
-            const sum = item.sum;
+            if (item.sum > 0) return
+            const sum = -item.sum;
             if (aggregatedData[type])
                 aggregatedData[type].sum += sum;
             else {
@@ -159,8 +160,8 @@ export default function Dashboard() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Total Spending</CardTitle>
-                            <CardDescription>Your expenses this month</CardDescription>
+                            <CardTitle>Total Balance</CardTitle>
+                            <CardDescription>Your balance this month</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <p className="text-4xl font-bold">{totalSpending.toFixed(2)} {currency}</p>
@@ -172,7 +173,7 @@ export default function Dashboard() {
                 <Card className="mt-8">
                     <CardHeader>
                         <CardTitle>Recent Transactions</CardTitle>
-                        <CardDescription>Your latest expenses</CardDescription>
+                        <CardDescription>Your latest transactions</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <ul className="divide-y divide-gray-200">
@@ -185,7 +186,7 @@ export default function Dashboard() {
                                         }</p>
                                         <p className="text-sm text-gray-500">{transaction.createdAt}</p>
                                     </div>
-                                    <p className="font-semibold">${transaction.sum.toFixed(2)}</p>
+                                    <p className="font-semibold">{transaction.sum} {currency}</p>
                                 </li>
                             ))}
                         </ul>
