@@ -25,9 +25,9 @@ export default function Header({
                 <NavigationMenuItem>
                     <ModeToggle />
                 </NavigationMenuItem>
-                <NavigationMenuItem>
+                {user && <NavigationMenuItem>
                     <CurrencySelector />
-                </NavigationMenuItem>
+                </NavigationMenuItem>}
                 <NavigationMenuItem>
                     <Link to="/" className={navigationMenuTriggerStyle()}>
                         Home

@@ -114,9 +114,9 @@ export default function Login() {
                     </form>
                 </Form>
                 <p className="mt-4 text-sm text-muted-foreground">
-                    Already have an account?{" "}
+                    Dont't have an account?{" "}
                     <Link to="/register" className="underline underline-offset-2 hover:text-primary">
-                        Log in
+                        Register
                     </Link>
                 </p>
             </div>

@@ -16,7 +16,7 @@ export default function LandingPage() {
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                         <Button size="lg">
-                            <Link to='register'>Register</Link>
+                            <Link to='/register'>Register</Link>
                         </Button>
                     </div>
                 </div>
