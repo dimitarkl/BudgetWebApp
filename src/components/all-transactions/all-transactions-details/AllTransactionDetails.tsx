@@ -42,7 +42,7 @@ export default function AllTransactionDetails(
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-[425px] ">
                     <DialogHeader>
-                        <DialogTitle>Expense Details</DialogTitle>
+                        <DialogTitle>Transaction Details</DialogTitle>
                         <DialogDescription >
                             Full information about this expense.
                         </DialogDescription>

@@ -38,7 +38,7 @@ export default function Dashboard() {
                     const spending = response.reduce((sum, item) => sum + item.sum, 0);
                     setTotalSpending(spending);
                     setAggregatedData(aggregateData(response));
-                    setRecentTransactions(response.reverse().slice(0, 5));
+                    setRecentTransactions(response.slice(0, 5));
                 }
             } catch (error) {
                 console.error('Error fetching data:');
