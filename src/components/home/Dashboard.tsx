@@ -25,8 +25,13 @@ type AggregatedData = {
     sum: number;
     color: string | undefined;
 };
+type Period = 1 | 3 | 6 | 12;
+
+const timePeriods: Period[] = [1, 3, 6, 12]
+
 export default function Dashboard() {
     const [totalSpending, setTotalSpending] = useState(0)
+    const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
     const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
     const [currency, setCurrency] = useState('BGN')
@@ -128,6 +133,19 @@ export default function Dashboard() {
                             <CardDescription >Your expenses by category</CardDescription>
                         </CardHeader>
                         <CardContent>
+                            <div className="flex gap-2 mb-3 ">
+                                {timePeriods.map((period) => (
+                                    <Button
+                                        key={period}
+                                        onClick={() => setSelectedPeriod(period)}
+                                        variant={selectedPeriod === period ? "default" : "outline"}
+                                        className={selectedPeriod === period ? "bg-primary" : "bg-gray-800 text-gray-100"}
+                                        size="sm"
+                                    >
+                                        {period}
+                                    </Button>
+                                ))}
+                            </div>
                             {aggregatedData
                                 ?
 
@@ -193,6 +211,6 @@ export default function Dashboard() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </div >
     )
 }
