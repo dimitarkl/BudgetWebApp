@@ -38,7 +38,7 @@ export default function Dashboard() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await getExpenses(1);
+                const response = await getExpenses(selectedPeriod);
                 if (!(response instanceof Error)) {
                     const spending = response.reduce((sum, item) => sum + item.sum, 0);
                     setTotalSpending(spending);
@@ -51,8 +51,7 @@ export default function Dashboard() {
         };
 
         fetchData();
-    }, []);
-    //TODO Make it refresh
+    }, [selectedPeriod]);
     useEffect(() => {
         listenToUserPreference()
             .then((response) => setCurrency(response))
@@ -130,7 +129,7 @@ export default function Dashboard() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Spending Overview</CardTitle>
-                            <CardDescription >Your expenses by category</CardDescription>
+                            <CardDescription >Your expenses by category for {selectedPeriod} months</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div className="flex gap-2 mb-3 ">
