@@ -14,7 +14,6 @@ type FetchData = {
 
 const createExpense = (userId: string, sum: string, type: string, transactionType: string, description?: string,) => {
     let amount: number = parseFloat(sum)
-    console.log(amount)
     if (isNaN(amount)) return
 
     if (transactionType === 'expense') amount = -amount
@@ -32,7 +31,6 @@ const createExpense = (userId: string, sum: string, type: string, transactionTyp
         return err instanceof Error ? err : new Error(String(err));
     })
 }
-
 const getExpenses = async (months: number) => {
     let user: string;//TODO add error handling    
     if (auth.currentUser?.uid) user = auth.currentUser?.uid
@@ -74,9 +72,11 @@ const deleteExpense = async (id: string) => {
 }
 
 const editExpense = async (id: string, userId: string, sum: string, type: string, description?: string) => {
+    let amount: number = parseFloat(sum)
+    if (isNaN(amount)) return
     const body = {
         userId,
-        sum,
+        sum: amount,
         type,
         description,
     }

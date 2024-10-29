@@ -164,7 +164,7 @@ export default function Dashboard() {
                             <CardDescription>Your balance this month</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <p className="text-4xl font-bold">{totalSpending.toFixed(2)} {currency}</p>
+                            <p className="text-4xl font-bold">{totalSpending?.toFixed(2)} {currency}</p>
                             <p className="text-sm text-gray-500 mt-2">Total spent across all categories</p>
                         </CardContent>
                     </Card>
