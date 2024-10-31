@@ -54,7 +54,6 @@ export default function ExpenseEntry({
 }: Props) {
     const [errorMessage, setErrorMessage] = useState('')
     const [type, setType] = useState('')
-    const navigate = useNavigate()
     const user = useContext(UserContext)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -74,9 +73,9 @@ export default function ExpenseEntry({
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
-                    } else {
+                    } else
                         form.reset()
-                    }
+
                 }
                 break;
             case 'Edit':
@@ -85,10 +84,9 @@ export default function ExpenseEntry({
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
-                    } else {
+                    } else
                         form.reset()
-                        navigate('/')
-                    }
+
                 }
                 break;
         }

@@ -3,8 +3,7 @@ import { Link } from "react-router-dom"
 import { useTheme } from "../contexts/theme-provider"
 
 export default function LandingPage() {
-    const { theme, setTheme } = useTheme();
-    console.log(theme)
+    const { theme } = useTheme();
     return (
         <section className="flex flex-col items-center justify-center min-h-screen ">
             <div className="container px-4 md:px-6 grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
@@ -25,13 +24,15 @@ export default function LandingPage() {
                 </div>
 
                 <div className="mx-auto flex items-center justify-center">
-                    {theme === 'dark' ? <img
-                        src="/public/LightPhoto.png"
-                        alt="Showcase of the app"
-                        className="aspect-[3/2] w-full  overflow-hidden rounded-xl object-cover shadow-lg"
-                    />
+                    {theme === 'dark'
+                        ?
+                        <img
+                            src="/LightPhoto.png"
+                            alt="Showcase of the app"
+                            className="aspect-[3/2] w-full  overflow-hidden rounded-xl object-cover shadow-lg"
+                        />
                         : <img
-                            src="/public/DarkPhoto.png"
+                            src="/DarkPhoto.png"
                             alt="Showcase of the app"
                             className="aspect-[3/2] w-full  overflow-hidden rounded-xl object-cover shadow-lg"
                         />

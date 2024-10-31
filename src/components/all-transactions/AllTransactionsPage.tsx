@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
-import { ArrowUpDown } from "lucide-react"
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
 type Period = 1 | 3 | 6 | 12;
 
 type Expense = {
@@ -79,6 +79,13 @@ export default function AllTransactionsPage() {
         setSpendingData(sortedData);
     }
 
+    const renderSortArrow = (column: keyof Expense) => {
+        if (column === sortColumn) {
+            return sortDirection === 'asc' ? <ArrowUp className=" h-4 w-4" /> : <ArrowDown className=" h-4 w-4" />;
+        }
+        return <ArrowUpDown className=" h-4 w-4" />;
+    };
+
     return (
         <div className="min-h-screen  p-4">
             <div className="max-w-xl mx-auto">
@@ -124,19 +131,20 @@ export default function AllTransactionsPage() {
                                             <TableHead >
                                                 <Button variant="ghost" onClick={() => sortData('createdAt')} className="p-0 h-auto font-bold">
                                                     Date
-                                                    <ArrowUpDown className="ml-2 h-4 w-4" />
+
+                                                    {renderSortArrow('createdAt')}
                                                 </Button>
                                             </TableHead>
                                             <TableHead >
                                                 <Button variant="ghost" onClick={() => sortData('type')} className="p-0 h-auto font-bold">
                                                     Type
-                                                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                                                    {renderSortArrow('type')}
                                                 </Button>
                                             </TableHead>
                                             <TableHead className="text-right">
                                                 <Button variant="ghost" onClick={() => sortData('sum')} className="p-0 h-auto font-bold">
                                                     Amount
-                                                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                                                    {renderSortArrow('sum')}
                                                 </Button>
                                             </TableHead>
                                             <TableHead className="text-right">Details</TableHead>
