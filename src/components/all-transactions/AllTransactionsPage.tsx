@@ -10,22 +10,25 @@ import AllTransactionDetails from "./all-transactions-details/AllTransactionDeta
 import { ArrowUpDown } from "lucide-react"
 type Period = 1 | 3 | 6 | 12;
 
-type Expenses = {
+type Expense = {
     id: string,
     userId: string,
     createdAt: string
     sum: number,
     type: string,
     description?: string,
-}[]
+}
+type Expenses = Expense[]
 
 const timePeriods: Period[] = [1, 3, 6, 12]
 
 export default function AllTransactionsPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
-    const [spendingData, setSpendingData] = useState<Expenses>()
+    const [spendingData, setSpendingData] = useState<Expenses>([])
     const [totalSpending, setTotalSpending] = useState(0)
     const [currency, setCurrency] = useState('BGN')
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
+    const [sortColumn, setSortColumn] = useState<keyof Expense>('createdAt')
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,6 +53,31 @@ export default function AllTransactionsPage() {
         listenToUserPreference()
             .then((response) => setCurrency(response))
     }, [])
+
+    const sortData = (column: keyof Expense) => {
+        if (column === sortColumn) {
+            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc')
+        } else {
+            setSortColumn(column)
+            setSortDirection('asc')
+        }
+        const sortedData = [...spendingData].sort((a, b) => {
+            const aValue = a[column];
+            const bValue = b[column];
+
+            if (typeof aValue === 'string' && typeof bValue === 'string')
+                return sortDirection === 'asc'
+                    ? aValue.localeCompare(bValue)
+                    : bValue.localeCompare(aValue);
+            else if (typeof aValue === 'number' && typeof bValue === 'number')
+                return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+
+
+            return 0;
+        });
+
+        setSpendingData(sortedData);
+    }
 
     return (
         <div className="min-h-screen  p-4">
@@ -94,19 +122,19 @@ export default function AllTransactionsPage() {
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead >
-                                                <Button variant="ghost" className="p-0 h-auto font-bold">
+                                                <Button variant="ghost" onClick={() => sortData('createdAt')} className="p-0 h-auto font-bold">
                                                     Date
                                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                                 </Button>
                                             </TableHead>
                                             <TableHead >
-                                                <Button variant="ghost" className="p-0 h-auto font-bold">
+                                                <Button variant="ghost" onClick={() => sortData('type')} className="p-0 h-auto font-bold">
                                                     Type
                                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                                 </Button>
                                             </TableHead>
                                             <TableHead className="text-right">
-                                                <Button variant="ghost" className="p-0 h-auto font-bold">
+                                                <Button variant="ghost" onClick={() => sortData('sum')} className="p-0 h-auto font-bold">
                                                     Amount
                                                     <ArrowUpDown className="ml-2 h-4 w-4" />
                                                 </Button>
