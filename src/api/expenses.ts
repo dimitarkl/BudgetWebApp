@@ -71,9 +71,11 @@ const deleteExpense = async (id: string) => {
 
 }
 
-const editExpense = async (id: string, userId: string, sum: string, type: string, description?: string) => {
+const editExpense = async (id: string, userId: string, sum: string, type: string, transactionType: string, description?: string) => {
     let amount: number = parseFloat(sum)
     if (isNaN(amount)) return
+    if (transactionType === 'expense' || amount < 0) amount = -amount
+
     const body = {
         userId,
         sum: amount,
@@ -82,8 +84,8 @@ const editExpense = async (id: string, userId: string, sum: string, type: string
     }
     const ref = doc(db, 'expenses', id)
     try {
-        await updateDoc(ref, body)
-        console.log('Data Sent')
+        return updateDoc(ref, body)
+
     }
     catch (err) {
         return err instanceof Error ? err : new Error(String(err));

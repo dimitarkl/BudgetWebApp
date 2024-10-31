@@ -29,7 +29,6 @@ export default function AllTransactionsPage() {
     const [currency, setCurrency] = useState('BGN')
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
     const [sortColumn, setSortColumn] = useState<keyof Expense>('createdAt')
-
     useEffect(() => {
         const fetchData = async () => {
             try {

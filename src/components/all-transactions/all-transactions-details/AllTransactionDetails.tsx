@@ -11,26 +11,37 @@ import { Edit, Info } from "lucide-react";
 import DeleteTransaction from "./delete-transaction/DeleteTransaction";
 import ExpenseEntry from "@/components/expense-entry/ExpenseEntry";
 
-
 type Props = {
     currency: string,
-    expense: {
-        id: string;
-        userId: string;
-        createdAt: string;
-        sum: number;
-        type: string;
-        description?: string;
-    },
+    expense: Expense
 
 
+}
+type Expense = {
+    id: string,
+    userId: string,
+    createdAt: string
+    sum: number,
+    type: string,
+    description?: string,
+}
+type Transaction = Expense & {
+    transactionType: "expense" | "income";
 }
 export default function AllTransactionDetails(
     {
         currency,
         expense
     }: Props) {
-
+    const transaction: Transaction = {
+        id: expense.id,
+        userId: expense.userId,
+        transactionType: expense.sum < 0 ? 'expense' : 'income',
+        createdAt: expense.createdAt,
+        sum: expense.sum,
+        type: expense.type,
+        description: expense.description
+    }
     return (
         <>
             <Dialog>
@@ -77,7 +88,7 @@ export default function AllTransactionDetails(
                                     Edit
                                 </Button>
                             </DialogTrigger>
-                            <ExpenseEntry expense={expense} inputType="Edit" />
+                            <ExpenseEntry expense={transaction} inputType="Edit" />
                         </Dialog>
                     </div>
                 </DialogContent>

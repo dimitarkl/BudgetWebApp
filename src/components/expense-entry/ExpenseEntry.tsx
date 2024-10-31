@@ -24,10 +24,10 @@ import { useContext, useState } from "react"
 import { createExpense, editExpense } from "@/api/expenses"
 import UserContext from "../contexts/UserContext"
 import { isError } from "@/lib/errorCheck"
-import { useNavigate } from "react-router-dom"
 import { Error } from "../error/Error"
 import { Switch } from "../ui/switch"
 import { Minus, Plus } from "lucide-react"
+import { useNavigate } from "react-router-dom"
 
 const formSchema = z.object({
     //TODO add validation
@@ -42,6 +42,7 @@ type Props = {
         id: string;
         userId: string;
         createdAt: string;
+        transactionType: 'expense' | 'income';
         sum: number;
         type: string;
         description?: string;
@@ -55,11 +56,13 @@ export default function ExpenseEntry({
     const [errorMessage, setErrorMessage] = useState('')
     const [type, setType] = useState('')
     const user = useContext(UserContext)
+    const navigate = useNavigate()
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             sum: expense ? String(expense?.sum) : '',
-            transactionType: 'expense',
+            //update default value when editing
+            transactionType: expense ? expense.transactionType : 'expense',
             description: expense ? expense?.description : '',
 
         },
@@ -80,12 +83,14 @@ export default function ExpenseEntry({
                 break;
             case 'Edit':
                 if (type && user?.uid && expense) {
-                    const response = editExpense(expense.id, user?.uid, data.sum, type, data.description)
+                    const response = await editExpense(expense.id, user?.uid, data.sum, type, data.transactionType, data.description)
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
-                    } else
+                    } else {
                         form.reset()
+                        navigate(0);
+                    }
 
                 }
                 break;
