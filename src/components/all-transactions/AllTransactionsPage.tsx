@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
+import { ArrowUpDown } from "lucide-react"
 type Period = 1 | 3 | 6 | 12;
 
 type Expenses = {
@@ -88,32 +89,67 @@ export default function AllTransactionsPage() {
                     </CardHeader>
                     {spendingData ?
                         <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead >Date</TableHead>
-                                        <TableHead >Type</TableHead>
-                                        <TableHead className="text-right">Amount</TableHead>
-                                        <TableHead className="text-right">Details</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {spendingData.map((expense, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="font-small ">{(expense.createdAt)}</TableCell>
-                                            <TableCell >{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
-                                            <TableCell className="text-right ">{expense.sum.toFixed(2)}</TableCell>
-                                            <TableCell className="text-right">
-                                                <AllTransactionDetails currency={currency} expense={expense} />
-                                            </TableCell>
+                            <div className="hidden md:flex ">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead >
+                                                <Button variant="ghost" className="p-0 h-auto font-bold">
+                                                    Date
+                                                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                                                </Button>
+                                            </TableHead>
+                                            <TableHead >
+                                                <Button variant="ghost" className="p-0 h-auto font-bold">
+                                                    Type
+                                                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                                                </Button>
+                                            </TableHead>
+                                            <TableHead className="text-right">
+                                                <Button variant="ghost" className="p-0 h-auto font-bold">
+                                                    Amount
+                                                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                                                </Button>
+                                            </TableHead>
+                                            <TableHead className="text-right">Details</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {spendingData.map((expense, index) => (
+                                            <TableRow key={index}>
+                                                <TableCell className="font-medium">{expense.createdAt}</TableCell>
+                                                <TableCell>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
+                                                <TableCell className="text-right">{expense.sum.toFixed(2)}</TableCell>
+                                                <TableCell className="text-right">
+                                                    <AllTransactionDetails currency={currency} expense={expense} />
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
+                            {/* mobile view */}
+                            <div className="mt-4 space-y-4 md:hidden">
+                                {spendingData.map((expense, index) => (
+                                    <Card key={index}>
+                                        <CardContent className="p-4">
+                                            <div className="flex justify-between items-center mb-2">
+                                                <span className="font-small">{expense.createdAt}</span>
+                                                <span className="font-bold text-xl">{expense.sum.toFixed(2)} {currency}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center">
+                                                <span>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</span>
+                                                <AllTransactionDetails currency={currency} expense={expense} />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
                         </CardContent>
-                        : <div><Spinner /></div>}
-                </Card>
-            </div>
+                        : <div><Spinner /></div>
+                    }
+                </Card >
+            </div >
         </div >
     )
 }
