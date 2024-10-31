@@ -149,7 +149,7 @@ export default function Dashboard() {
                                 ?
 
                                 <ChartContainer
-                                    config={Object.fromEntries(aggregatedData.map(item => [item.type.toLowerCase(), { label: item.type }]))}
+                                    config={Object.fromEntries(aggregatedData.map(item => [item.type, { label: item.type.charAt(0).toUpperCase() + item.type.slice(1) }]))}
                                     className="mt-5"
                                 >
                                     <PieChart>
@@ -159,7 +159,7 @@ export default function Dashboard() {
                                             nameKey="type"
                                             cx="50%"
                                             cy="50%"
-                                            outerRadius="68%"
+                                            outerRadius="68"
                                             label={({ type, percent }) => `${type.charAt(0).toUpperCase() + type.slice(1)} ${(percent * 100).toFixed(0)}%`}
                                             labelLine={false}
                                         >
@@ -177,8 +177,11 @@ export default function Dashboard() {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Total Balance</CardTitle>
-                            <CardDescription>Your balance this month</CardDescription>
+                            <CardTitle >Total Balance</CardTitle>
+                            {selectedPeriod == 1
+                                ? <CardDescription>Your balance for this month</CardDescription>
+                                : <CardDescription>Your balance for {selectedPeriod} months</CardDescription>
+                            }
                         </CardHeader>
                         <CardContent>
                             <p className="text-4xl font-bold">{totalSpending?.toFixed(2)} {currency}</p>

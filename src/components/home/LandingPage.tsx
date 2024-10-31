@@ -1,7 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
+import { useTheme } from "../contexts/theme-provider"
 
 export default function LandingPage() {
+    const { theme, setTheme } = useTheme();
+    console.log(theme)
     return (
         <section className="flex flex-col items-center justify-center min-h-screen ">
             <div className="container px-4 md:px-6 grid gap-6 lg:grid-cols-[1fr_500px] lg:gap-12 xl:grid-cols-[1fr_550px]">
@@ -20,12 +23,19 @@ export default function LandingPage() {
                         </Button>
                     </div>
                 </div>
+
                 <div className="mx-auto flex items-center justify-center">
-                    <img
-                        src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                    {theme === 'dark' ? <img
+                        src="/public/LightPhoto.png"
                         alt="Showcase of the app"
-                        className="aspect-[3/2] w-full max-w-[550px] overflow-hidden rounded-xl object-cover shadow-lg"
+                        className="aspect-[3/2] w-full  overflow-hidden rounded-xl object-cover shadow-lg"
                     />
+                        : <img
+                            src="/public/DarkPhoto.png"
+                            alt="Showcase of the app"
+                            className="aspect-[3/2] w-full  overflow-hidden rounded-xl object-cover shadow-lg"
+                        />
+                    }
                 </div>
             </div>
         </section>
