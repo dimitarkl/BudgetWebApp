@@ -14,7 +14,7 @@ type FetchData = {
 
 const createExpense = (userId: string, sum: string, type: string, transactionType: string, description?: string,) => {
     let amount: number = parseFloat(sum)
-    if (isNaN(amount)) return
+    if (isNaN(amount)) return new Error('Invalid amount');
 
     if (transactionType === 'expense') amount = -amount
     const body = {

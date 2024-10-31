@@ -77,7 +77,7 @@ export default function Dashboard() {
                 break
             case "other":
                 //TODO add another color 
-                return 'hsl(var(--chart-3))'
+                return 'hsl(var(--chart-6))'
                 break
 
         }
@@ -159,8 +159,8 @@ export default function Dashboard() {
                                             nameKey="type"
                                             cx="50%"
                                             cy="50%"
-                                            outerRadius="75%"
-                                            label={({ type, percent }) => `${type} ${(percent * 100).toFixed(0)}%`}
+                                            outerRadius="68%"
+                                            label={({ type, percent }) => `${type.charAt(0).toUpperCase() + type.slice(1)} ${(percent * 100).toFixed(0)}%`}
                                             labelLine={false}
                                         >
                                             {aggregatedData?.map((entry, index) => (

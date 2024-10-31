@@ -75,7 +75,7 @@ export default function ExpenseEntry({
                         setErrorMessage(response.message)
                         return
                     } else {
-
+                        form.reset()
                     }
                 }
                 break;
