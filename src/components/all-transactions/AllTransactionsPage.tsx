@@ -180,8 +180,14 @@ export default function AllTransactionsPage() {
                                                 sortData('createdAt')
                                                 setSortOption('Date')
                                             }}>Date</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => sortData('sum')}>Amount</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => sortData('type')}>Type</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => {
+                                                sortData('sum')
+                                                setSortOption('Amount')
+                                            }}>Amount</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => {
+                                                sortData('type')
+                                                setSortOption('Type')
+                                            }}>Type</DropdownMenuItem>
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </div>
