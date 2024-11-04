@@ -12,7 +12,7 @@ type FetchData = {
     description?: string,
 }[]
 
-const createExpense = (userId: string, sum: string, type: string, transactionType: string, description?: string,) => {
+const createExpense = async (userId: string, sum: string, type: string, transactionType: string, description?: string,) => {
     let amount: number = parseFloat(sum)
     if (isNaN(amount)) return new Error('Invalid amount');
 
@@ -25,11 +25,14 @@ const createExpense = (userId: string, sum: string, type: string, transactionTyp
         description,
     }
     const docCol = doc(collection(db, 'expenses'))
-    setDoc(docCol, body).then(() => {
-        console.log('Data sent ');
-    }).catch((err) => {
+    try {
+        const response = await setDoc(docCol, body)
+        return response;
+
+    } catch (err) {
         return err instanceof Error ? err : new Error(String(err));
-    })
+    }
+
 }
 const getExpenses = async (months: number) => {
     let user: string;//TODO add error handling    

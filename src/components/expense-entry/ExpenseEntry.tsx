@@ -71,12 +71,14 @@ export default function ExpenseEntry({
         switch (inputType) {
             case 'Create':
                 if (type && user?.uid) {
-                    const response = createExpense(user?.uid, data.sum, type, data.transactionType, data.description)
+                    const response = await createExpense(user?.uid, data.sum, type, data.transactionType, data.description)
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
-                    } else
+                    } else {
                         form.reset()
+                        navigate(0);
+                    }
 
                 }
                 break;
