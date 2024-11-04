@@ -91,7 +91,7 @@ export default function AllTransactionsPage() {
             <div className="max-w-xl mx-auto">
                 <div className="flextext-center justify-center">
                     <h1 className="text-5xl font-bold mb-2 ">All Transactions</h1>
-                    <p className="text-gray-100">Everything you have spend and earned</p>
+                    <p>Everything you have spend and earned</p>
                     <div className="flex flex-wrap gap-2 mb-6 mt-6">
                         {timePeriods.map((period) => (
                             <Button
