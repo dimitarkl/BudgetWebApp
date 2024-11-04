@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/popover"
 import { useEffect, useState } from "react"
 
-const frameworks = [
+const expenseTypes = [
     {
         value: "food & Drinks",
         label: "Food & Drinks",
@@ -84,7 +84,7 @@ export default function ExpenseType(
                     className="w-full"
                 >
                     {value
-                        ? frameworks.find((framework) => framework.value === value)?.label
+                        ? expenseTypes.find((type) => type.value === value)?.label
                         : "Search type of expense..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -93,12 +93,12 @@ export default function ExpenseType(
                 <Command>
                     <CommandInput placeholder="Search type of expense..." />
                     <CommandList>
-                        <CommandEmpty>No framework found.</CommandEmpty>
+                        <CommandEmpty>No types found.</CommandEmpty>
                         <CommandGroup>
-                            {frameworks.map((framework) => (
+                            {expenseTypes.map((expenseType) => (
                                 <CommandItem
-                                    key={framework.value}
-                                    value={framework.value}
+                                    key={expenseType.value}
+                                    value={expenseType.value}
                                     onSelect={(currentValue) => {
                                         setValue(currentValue === value ? "" : currentValue)
                                         type(currentValue);
@@ -108,10 +108,10 @@ export default function ExpenseType(
                                     <Check
                                         className={cn(
                                             "mr-2 h-4 w-4",
-                                            value === framework.value ? "opacity-100" : "opacity-0"
+                                            value === expenseType.value ? "opacity-100" : "opacity-0"
                                         )}
                                     />
-                                    {framework.label}
+                                    {expenseType.label}
                                 </CommandItem>
                             ))}
                         </CommandGroup>

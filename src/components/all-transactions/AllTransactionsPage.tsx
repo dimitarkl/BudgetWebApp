@@ -7,7 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
 type Period = 1 | 3 | 6 | 12;
 
 type Expense = {
@@ -21,7 +22,7 @@ type Expense = {
 type Expenses = Expense[]
 
 const timePeriods: Period[] = [1, 3, 6, 12]
-
+type SortOption = 'Date' | 'Amount' | 'Type'
 export default function AllTransactionsPage() {
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
     const [spendingData, setSpendingData] = useState<Expenses>([])
@@ -29,13 +30,13 @@ export default function AllTransactionsPage() {
     const [currency, setCurrency] = useState('BGN')
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
     const [sortColumn, setSortColumn] = useState<keyof Expense>('createdAt')
+    const [sortOption, setSortOption] = useState<SortOption>('Date')
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await getExpenses(selectedPeriod);
                 if (!(response instanceof Error)) {
                     setSpendingData(response);
-                    //TODO monthly spending
                     setTotalSpending((response.reduce((sum, item) => sum + item.sum, 0)))
                 }
             } catch (error) {
@@ -165,6 +166,25 @@ export default function AllTransactionsPage() {
                             </div>
                             {/* mobile view */}
                             <div className="mt-4 space-y-4 md:hidden">
+                                <div className="mb-4">
+                                    {/* TODO FIX STYLE */}
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button className="w-full ">
+                                                <span>Sort by: {sortOption.charAt(0).toUpperCase() + sortOption.slice(1)}</span>
+                                                <ChevronDown className="ml-2 h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent className="w-full">
+                                            <DropdownMenuItem onClick={() => {
+                                                sortData('createdAt')
+                                                setSortOption('Date')
+                                            }}>Date</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => sortData('sum')}>Amount</DropdownMenuItem>
+                                            <DropdownMenuItem onClick={() => sortData('type')}>Type</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </div>
                                 {spendingData.map((expense, index) => (
                                     <Card key={index}>
                                         <CardContent className="p-4">

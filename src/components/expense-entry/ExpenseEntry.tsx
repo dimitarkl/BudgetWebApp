@@ -61,7 +61,6 @@ export default function ExpenseEntry({
         resolver: zodResolver(formSchema),
         defaultValues: {
             sum: expense ? String(expense?.sum) : '',
-            //update default value when editing
             transactionType: expense ? expense.transactionType : 'expense',
             description: expense ? expense?.description : '',
 
@@ -91,7 +90,6 @@ export default function ExpenseEntry({
                         form.reset()
                         navigate(0);
                     }
-
                 }
                 break;
         }
