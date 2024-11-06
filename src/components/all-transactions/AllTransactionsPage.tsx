@@ -9,6 +9,8 @@ import { Spinner } from "../ui/spinner"
 import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
 import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { Error } from "../error/Error"
+import { isError } from "@/lib/errorCheck"
 type Period = 1 | 3 | 6 | 12;
 
 type Expense = {
@@ -24,6 +26,7 @@ type Expenses = Expense[]
 const timePeriods: Period[] = [1, 3, 6, 12]
 type SortOption = 'Date' | 'Amount' | 'Type'
 export default function AllTransactionsPage() {
+    const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
     const [spendingData, setSpendingData] = useState<Expenses>([])
     const [totalSpending, setTotalSpending] = useState(0)
@@ -35,12 +38,16 @@ export default function AllTransactionsPage() {
         const fetchData = async () => {
             try {
                 const response = await getExpenses(selectedPeriod);
-                if (!(response instanceof Error)) {
+                if (!isError(response)) {
                     setSpendingData(response);
                     setTotalSpending((response.reduce((sum, item) => sum + item.sum, 0)))
+                } else {
+                    setErrorMessage('Error fetching transaction data')
                 }
             } catch (error) {
-                console.error('Error fetching data:');
+                setErrorMessage('Error fetching transaction data')
+                console.log('Error fetching transaction data:' + (error as Error).message)
+
             }
         };
         fetchData()
@@ -55,6 +62,7 @@ export default function AllTransactionsPage() {
     useEffect(() => {
         listenToUserPreference()
             .then((response) => setCurrency(response))
+            .catch((err) => console.log('Error fetching currency data:' + (err as Error).message))
     }, [])
 
     const sortData = (column: keyof Expense) => {
@@ -125,103 +133,105 @@ export default function AllTransactionsPage() {
                         <CardTitle>All Transactions</CardTitle>
                         <CardDescription >Detailed list of all transactions for the last {selectedPeriod} months</CardDescription>
                     </CardHeader>
-                    {spendingData ?
-                        <CardContent>
-                            <div className="hidden md:flex ">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead >
-                                                <Button variant="ghost" onClick={() => sortData('createdAt')} className="p-0 h-auto font-bold">
-                                                    Date
+                    {errorMessage
+                        ? <Error message={errorMessage} className="fixed top-16 left-1/2 transform bg-black -translate-x-1/2 z-50" />
+                        : spendingData ?
+                            <CardContent>
+                                <div className="hidden md:flex ">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead >
+                                                    <Button variant="ghost" onClick={() => sortData('createdAt')} className="p-0 h-auto font-bold">
+                                                        Date
 
-                                                    {renderSortArrow('createdAt')}
-                                                </Button>
-                                            </TableHead>
-                                            <TableHead >
-                                                <Button variant="ghost" onClick={() => sortData('type')} className="p-0 h-auto font-bold">
-                                                    Type
-                                                    {renderSortArrow('type')}
-                                                </Button>
-                                            </TableHead>
-                                            <TableHead className="text-right">
-                                                <Button variant="ghost" onClick={() => sortData('sum')} className="p-0 h-auto font-bold">
-                                                    Amount
-                                                    {renderSortArrow('sum')}
-                                                </Button>
-                                            </TableHead>
-                                            <TableHead className="text-right">Details</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {spendingData.map((expense, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell className="font-medium">{expense.createdAt}</TableCell>
-                                                <TableCell>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
-                                                <TableCell className="text-right">{expense.sum.toFixed(2)}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <AllTransactionDetails currency={currency} expense={expense} />
-                                                </TableCell>
+                                                        {renderSortArrow('createdAt')}
+                                                    </Button>
+                                                </TableHead>
+                                                <TableHead >
+                                                    <Button variant="ghost" onClick={() => sortData('type')} className="p-0 h-auto font-bold">
+                                                        Type
+                                                        {renderSortArrow('type')}
+                                                    </Button>
+                                                </TableHead>
+                                                <TableHead className="text-right">
+                                                    <Button variant="ghost" onClick={() => sortData('sum')} className="p-0 h-auto font-bold">
+                                                        Amount
+                                                        {renderSortArrow('sum')}
+                                                    </Button>
+                                                </TableHead>
+                                                <TableHead className="text-right">Details</TableHead>
                                             </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {spendingData.map((expense, index) => (
+                                                <TableRow key={index}>
+                                                    <TableCell className="font-medium">{expense.createdAt}</TableCell>
+                                                    <TableCell>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
+                                                    <TableCell className="text-right">{expense.sum.toFixed(2)}</TableCell>
+                                                    <TableCell className="text-right">
+                                                        <AllTransactionDetails currency={currency} expense={expense} />
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                                {/* mobile view */}
+                                <div className="mt-4 space-y-4">
+                                    <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center gap-2">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button className="w-full sm:w-auto">
+                                                    <span>Sort by: {sortOption}</span>
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent>
+                                                <DropdownMenuItem onClick={() => {
+                                                    sortData('createdAt')
+                                                    setSortOption('Date')
+                                                }}>Date</DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => {
+                                                    sortData('sum')
+                                                    setSortOption('Amount')
+                                                }}>Amount</DropdownMenuItem>
+                                                <DropdownMenuItem onClick={() => {
+                                                    sortData('type')
+                                                    setSortOption('Type')
+                                                }}>Type</DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                        <Button onClick={toggleSortDirection} className="sm:w-auto">
+                                            {sortDirection === 'asc' ? (
+                                                <>
+                                                    <ChevronUp className=" h-4 w-4" />
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <ChevronDown className=" h-4 w-4" />
+                                                </>
+                                            )}
+                                        </Button>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {spendingData.map((expense, index) => (
+                                            <Card key={index}>
+                                                <CardContent className="p-4">
+                                                    <div className="flex justify-between items-center mb-2">
+                                                        <span className="font-small">{expense.createdAt}</span>
+                                                        <span className="font-bold text-xl">{expense.sum.toFixed(2)} {currency}</span>
+                                                    </div>
+                                                    <div className="flex justify-between items-center">
+                                                        <span>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</span>
+                                                        <AllTransactionDetails currency={currency} expense={expense} />
+                                                    </div>
+                                                </CardContent>
+                                            </Card>
                                         ))}
-                                    </TableBody>
-                                </Table>
-                            </div>
-                            {/* mobile view */}
-                            <div className="mt-4 space-y-4">
-                                <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center gap-2">
-                                    <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button className="w-full sm:w-auto">
-                                                <span>Sort by: {sortOption}</span>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent>
-                                            <DropdownMenuItem onClick={() => {
-                                                sortData('createdAt')
-                                                setSortOption('Date')
-                                            }}>Date</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => {
-                                                sortData('sum')
-                                                setSortOption('Amount')
-                                            }}>Amount</DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => {
-                                                sortData('type')
-                                                setSortOption('Type')
-                                            }}>Type</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                    </DropdownMenu>
-                                    <Button onClick={toggleSortDirection} className="sm:w-auto">
-                                        {sortDirection === 'asc' ? (
-                                            <>
-                                                <ChevronUp className=" h-4 w-4" />
-                                            </>
-                                        ) : (
-                                            <>
-                                                <ChevronDown className=" h-4 w-4" />
-                                            </>
-                                        )}
-                                    </Button>
+                                    </div>
                                 </div>
-                                <div className="space-y-4">
-                                    {spendingData.map((expense, index) => (
-                                        <Card key={index}>
-                                            <CardContent className="p-4">
-                                                <div className="flex justify-between items-center mb-2">
-                                                    <span className="font-small">{expense.createdAt}</span>
-                                                    <span className="font-bold text-xl">{expense.sum.toFixed(2)} {currency}</span>
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <span>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</span>
-                                                    <AllTransactionDetails currency={currency} expense={expense} />
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    ))}
-                                </div>
-                            </div>
-                        </CardContent>
-                        : <div><Spinner /></div>
+                            </CardContent>
+                            : <div><Spinner /></div>
                     }
                 </Card >
             </div >
