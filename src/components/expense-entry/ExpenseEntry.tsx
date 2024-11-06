@@ -28,7 +28,6 @@ import { Error } from "../error/Error"
 import { Switch } from "../ui/switch"
 import { Minus, Plus } from "lucide-react"
 import { useNavigate } from "react-router-dom"
-import { ErrorContext } from "../contexts/ErrorContext"
 
 const formSchema = z.object({
     //TODO add validation
@@ -82,7 +81,7 @@ export default function ExpenseEntry({
                     }
 
                 } else if (type) setErrorMessage('User Not Found')
-                else if (user?.uid) setErrorMessage('Type Not Selected')
+                else if (user?.uid) setErrorMessage('Expense Type Not Selected')
                 break;
             case 'Edit':
                 if (type && user?.uid && expense) {
@@ -95,13 +94,11 @@ export default function ExpenseEntry({
                         navigate(0);
                     }
                 } else if (type) setErrorMessage('User Not Found')
-                else if (user?.uid) setErrorMessage('Type Not Selected')
+                else if (user?.uid) setErrorMessage('Expense Type Not Selected')
                 break;
         }
     }
-    function Type(currentValue: string) {
-        setType(currentValue)
-    }
+    const Type = (currentValue: string) => setType(currentValue)
 
     return (
         <>
