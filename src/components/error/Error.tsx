@@ -7,15 +7,16 @@ import {
 } from "@/components/ui/alert"
 
 type Props = {
-    message: string
+    message: string,
+    className?: string | undefined,
 }
 
 export function Error({
-    message
+    message,
+    className
 }: Props) {
     return (
-
-        <div >
+        <div className={className ? className : ''}>
             <Alert variant="destructive">
                 < AlertCircle className="h-4 w-4" />
                 <AlertTitle className="font-bold text-xl">Error</AlertTitle>
