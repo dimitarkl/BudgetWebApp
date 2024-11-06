@@ -13,6 +13,7 @@ import LandingPage from '@/components/home/LandingPage'
 import NotFoundPage from './components/not-found/NotFound'
 import RouteGuard from './components/route-guard/RouteGuard'
 import AllTransactionsPage from './components/all-transactions/AllTransactionsPage'
+import { ErrorProvider } from './components/contexts/ErrorContext'
 
 function App() {
 	const [loggedIn, setLoggedIn] = useState(auth.currentUser);
@@ -33,32 +34,32 @@ function App() {
 	return (
 
 		<UserContext.Provider value={loggedIn}>
-
-			<ThemeProvider defaultTheme="dark" >
-				<Header logout={logout} />
-				<Routes>
-					{loggedIn
-						? <Route path='/' element={<Dashboard />} />
-						: <Route path='/' element={<LandingPage />} />}
-					<Route path='/login' element=
-						{
-							<AuthGuard user={loggedIn} ><Login /></AuthGuard>
-						}
-					/>
-					<Route path='/register' element=
-						{
-							<AuthGuard user={loggedIn} ><Register /></AuthGuard>
-						}
-					/>
-					<Route path='/transactions' element=
-						{
-							<RouteGuard user={loggedIn} ><AllTransactionsPage /></RouteGuard>
-						}
-					/>
-					<Route path='*' element={<NotFoundPage />} />
-				</Routes>
-			</ThemeProvider>
-
+			<ErrorProvider>
+				<ThemeProvider defaultTheme="dark" >
+					<Header logout={logout} />
+					<Routes>
+						{loggedIn
+							? <Route path='/' element={<Dashboard />} />
+							: <Route path='/' element={<LandingPage />} />}
+						<Route path='/login' element=
+							{
+								<AuthGuard user={loggedIn} ><Login /></AuthGuard>
+							}
+						/>
+						<Route path='/register' element=
+							{
+								<AuthGuard user={loggedIn} ><Register /></AuthGuard>
+							}
+						/>
+						<Route path='/transactions' element=
+							{
+								<RouteGuard user={loggedIn} ><AllTransactionsPage /></RouteGuard>
+							}
+						/>
+						<Route path='*' element={<NotFoundPage />} />
+					</Routes>
+				</ThemeProvider>
+			</ErrorProvider>
 		</UserContext.Provider >
 	)
 }
