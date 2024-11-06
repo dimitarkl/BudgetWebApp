@@ -104,15 +104,22 @@ function formatServerTimestamp(serverTimestamp: Timestamp) {
 
     return `${year}-${month}-${day}`;
 }
-function savePreference(userId: string, currencyPref: string) {
+async function savePreference(userId: string, currencyPref: string) {
     const body = {
         userId,
         currencyPref
     }
     const docCol = doc(db, 'user-preferences', userId)
+    try {
+        const response = await setDoc(docCol, body, { merge: true })
+        listenToUserPreference()
+        return response
+    } catch (err) {
+        console.log(`Eror: ${err instanceof Error ? err : new Error(String(err))}`)
+    }
     setDoc(docCol, body, { merge: true }).then(() => {
         console.log('Data sent');
-        listenToUserPreference()
+
     }).catch((err) => {
         console.log(`Eror: ${err instanceof Error ? err : new Error(String(err))}`)
     })

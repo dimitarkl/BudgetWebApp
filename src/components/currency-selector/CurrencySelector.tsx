@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { listenToUserPreference, savePreference } from '@/api/expenses'
 import UserContext from '../contexts/UserContext'
+import { useNavigate } from 'react-router-dom'
+import { isError } from '@/lib/errorCheck'
 
 const currencies = [
     { code: 'USD', symbol: '$' },
@@ -21,6 +23,7 @@ const currencies = [
 
 export default function CurrencySelector() {
     const [currency, setCurrency] = useState(currencies[0])
+    const navigate = useNavigate()
     const user = useContext(UserContext)
 
     useEffect(() => {
@@ -40,13 +43,17 @@ export default function CurrencySelector() {
     }, [currencies, user]);
 
 
-    const handleCurrencyChange = (newCurrency: {
+    const handleCurrencyChange = async (newCurrency: {
         code: string;
         symbol: string;
     }) => {
         setCurrency(newCurrency);
         if (user) {
-            savePreference(user.uid, newCurrency.code);
+            const response = await savePreference(user.uid, newCurrency.code);
+            if (isError(response)) console.log('User Not Found' + response.message)
+            else navigate(0)
+        } else {
+            console.log('User Not Found')
         }
     }
     return (
