@@ -7,10 +7,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
-import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu"
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
 import { Error } from "../error/Error"
 import { isError } from "@/lib/errorCheck"
+import MobileExpenseList from "./all-transactions-details/mobile-expense-list/MobileExpenseList"
 type Period = 1 | 3 | 6 | 12;
 
 type Expense = {
@@ -24,7 +24,6 @@ type Expense = {
 type Expenses = Expense[]
 
 const timePeriods: Period[] = [1, 3, 6, 12]
-type SortOption = 'Date' | 'Amount' | 'Type'
 export default function AllTransactionsPage() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null)
     const [selectedPeriod, setSelectedPeriod] = useState<Period>(1)
@@ -33,7 +32,7 @@ export default function AllTransactionsPage() {
     const [currency, setCurrency] = useState('BGN')
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
     const [sortColumn, setSortColumn] = useState<keyof Expense>('createdAt')
-    const [sortOption, setSortOption] = useState<SortOption>('Date')
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -55,10 +54,6 @@ export default function AllTransactionsPage() {
             fetchData()
         }
     }, [selectedPeriod])
-    const toggleSortDirection = () => {
-        setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-        sortData(sortColumn);
-    };
     useEffect(() => {
         listenToUserPreference()
             .then((response) => setCurrency(response))
@@ -177,59 +172,15 @@ export default function AllTransactionsPage() {
                                         </TableBody>
                                     </Table>
                                 </div>
-                                {/* mobile view */}
-                                <div className="mt-4 space-y-4">
-                                    <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center gap-2">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button className="w-full sm:w-auto">
-                                                    <span>Sort by: {sortOption}</span>
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent>
-                                                <DropdownMenuItem onClick={() => {
-                                                    sortData('createdAt')
-                                                    setSortOption('Date')
-                                                }}>Date</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => {
-                                                    sortData('sum')
-                                                    setSortOption('Amount')
-                                                }}>Amount</DropdownMenuItem>
-                                                <DropdownMenuItem onClick={() => {
-                                                    sortData('type')
-                                                    setSortOption('Type')
-                                                }}>Type</DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                        <Button onClick={toggleSortDirection} className="sm:w-auto">
-                                            {sortDirection === 'asc' ? (
-                                                <>
-                                                    <ChevronUp className=" h-4 w-4" />
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <ChevronDown className=" h-4 w-4" />
-                                                </>
-                                            )}
-                                        </Button>
-                                    </div>
-                                    <div className="space-y-4">
-                                        {spendingData.map((expense, index) => (
-                                            <Card key={index}>
-                                                <CardContent className="p-4">
-                                                    <div className="flex justify-between items-center mb-2">
-                                                        <span className="font-small">{expense.createdAt}</span>
-                                                        <span className="font-bold text-xl">{expense.sum.toFixed(2)} {currency}</span>
-                                                    </div>
-                                                    <div className="flex justify-between items-center">
-                                                        <span>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</span>
-                                                        <AllTransactionDetails currency={currency} expense={expense} />
-                                                    </div>
-                                                </CardContent>
-                                            </Card>
-                                        ))}
-                                    </div>
-                                </div>
+                                <MobileExpenseList
+                                    sortData={sortData}
+                                    sortDirection={sortDirection}
+                                    spendingData={spendingData}
+                                    currency={currency}
+                                    setSortDirection={setSortDirection}
+                                    sortColumn={sortColumn}
+                                />
+
                             </CardContent>
                             : <div><Spinner /></div>
                     }
