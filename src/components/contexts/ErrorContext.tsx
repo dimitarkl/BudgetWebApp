@@ -26,7 +26,7 @@ const ErrorProvider = ({ children }: Props) => {
 
     return (
         <ErrorContext.Provider value={{ error, setError }}>
-            {error && <Error message={error} />}
+            {error && <Error message={error} className="fixed top-16 left-1/2 transform bg-black -translate-x-1/2 z-50" />}
             {children}
         </ErrorContext.Provider>
     );
