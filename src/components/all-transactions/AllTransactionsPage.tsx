@@ -1,16 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
-import AllTransactionDetails from "./all-transactions-details/AllTransactionDetails"
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
 import { Error } from "../error/Error"
 import { isError } from "@/lib/errorCheck"
 import MobileExpenseList from "./all-transactions-details/mobile-expense-list/MobileExpenseList"
+import DesktopExpenseList from "./all-transactions-details/desktop-expense-list/DesktopExpenseList"
+import { ErrorContext } from "../contexts/ErrorContext"
 type Period = 1 | 3 | 6 | 12;
 
 type Expense = {
@@ -32,6 +31,7 @@ export default function AllTransactionsPage() {
     const [currency, setCurrency] = useState('BGN')
     const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
     const [sortColumn, setSortColumn] = useState<keyof Expense>('createdAt')
+    const errorContext = useContext(ErrorContext)
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,7 +57,10 @@ export default function AllTransactionsPage() {
     useEffect(() => {
         listenToUserPreference()
             .then((response) => setCurrency(response))
-            .catch((err) => console.log('Error fetching currency data:' + (err as Error).message))
+            .catch((err) => {
+                errorContext?.setError('Error fetching currency data:')
+                console.log('Error fetching currency data:' + (err as Error).message)
+            })
     }, [])
 
     const sortData = (column: keyof Expense) => {
@@ -84,13 +87,6 @@ export default function AllTransactionsPage() {
 
         setSpendingData(sortedData);
     }
-
-    const renderSortArrow = (column: keyof Expense) => {
-        if (column === sortColumn) {
-            return sortDirection === 'asc' ? <ArrowUp className=" h-4 w-4" /> : <ArrowDown className=" h-4 w-4" />;
-        }
-        return <ArrowUpDown className=" h-4 w-4" />;
-    };
 
     return (
         <div className="min-h-screen  p-4">
@@ -132,46 +128,14 @@ export default function AllTransactionsPage() {
                         ? <Error message={errorMessage} className="fixed top-16 left-1/2 transform bg-black -translate-x-1/2 z-50" />
                         : spendingData ?
                             <CardContent>
-                                <div className="hidden md:flex ">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead >
-                                                    <Button variant="ghost" onClick={() => sortData('createdAt')} className="p-0 h-auto font-bold">
-                                                        Date
+                                <DesktopExpenseList
+                                    sortColumn={sortColumn}
+                                    sortDirection={sortDirection}
+                                    sortData={sortData}
+                                    spendingData={spendingData}
+                                    currency={currency}
+                                />
 
-                                                        {renderSortArrow('createdAt')}
-                                                    </Button>
-                                                </TableHead>
-                                                <TableHead >
-                                                    <Button variant="ghost" onClick={() => sortData('type')} className="p-0 h-auto font-bold">
-                                                        Type
-                                                        {renderSortArrow('type')}
-                                                    </Button>
-                                                </TableHead>
-                                                <TableHead className="text-right">
-                                                    <Button variant="ghost" onClick={() => sortData('sum')} className="p-0 h-auto font-bold">
-                                                        Amount
-                                                        {renderSortArrow('sum')}
-                                                    </Button>
-                                                </TableHead>
-                                                <TableHead className="text-right">Details</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {spendingData.map((expense, index) => (
-                                                <TableRow key={index}>
-                                                    <TableCell className="font-medium">{expense.createdAt}</TableCell>
-                                                    <TableCell>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
-                                                    <TableCell className="text-right">{expense.sum.toFixed(2)}</TableCell>
-                                                    <TableCell className="text-right">
-                                                        <AllTransactionDetails currency={currency} expense={expense} />
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
                                 <MobileExpenseList
                                     sortData={sortData}
                                     sortDirection={sortDirection}
@@ -180,7 +144,6 @@ export default function AllTransactionsPage() {
                                     setSortDirection={setSortDirection}
                                     sortColumn={sortColumn}
                                 />
-
                             </CardContent>
                             : <div><Spinner /></div>
                     }
