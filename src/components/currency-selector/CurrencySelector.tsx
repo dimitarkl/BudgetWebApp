@@ -14,6 +14,7 @@ import { listenToUserPreference, savePreference } from '@/api/expenses'
 import UserContext from '../contexts/UserContext'
 import { useNavigate } from 'react-router-dom'
 import { isError } from '@/lib/errorCheck'
+import { ErrorContext } from '../contexts/ErrorContext'
 
 const currencies = [
     { code: 'USD', symbol: '$' },
@@ -25,16 +26,21 @@ export default function CurrencySelector() {
     const [currency, setCurrency] = useState(currencies[0])
     const navigate = useNavigate()
     const user = useContext(UserContext)
+    const errorContext = useContext(ErrorContext)
 
     useEffect(() => {
         const fetchCurrency = async () => {
             try {
                 const response = await listenToUserPreference();
-                const preferredCurrency = currencies.find((c) => c.code === response);
-                if (preferredCurrency) {
-                    setCurrency(preferredCurrency);
+                if (isError(response)) {
+                    console.log('Error fetching user preference:' + response.message)
+                    return errorContext?.setError('Error fetching user preference')
                 }
+                const preferredCurrency = currencies.find((c) => c.code === response);
+                if (preferredCurrency) setCurrency(preferredCurrency);
+                else errorContext?.setError('Error fetching user preference')
             } catch (error) {
+                errorContext?.setError('Error fetching user preference')
                 console.error('Error fetching user preference:', error);
             }
         };
@@ -50,10 +56,13 @@ export default function CurrencySelector() {
         setCurrency(newCurrency);
         if (user) {
             const response = await savePreference(user.uid, newCurrency.code);
-            if (isError(response)) console.log('User Not Found' + response.message)
+            if (isError(response)) {
+                console.log('User Not Found' + response.message)
+                return errorContext?.setError('User Not Found')
+            }
             else navigate(0)
         } else {
-            console.log('User Not Found')
+            errorContext?.setError('User Not Found')
         }
     }
     return (
