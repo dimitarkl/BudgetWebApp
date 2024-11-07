@@ -1,10 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import AllTransactionDetails from "../AllTransactionDetails"
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { useState } from "react"
+import { ArrowDown, ArrowUp, ChevronDown, ChevronUp } from "lucide-react"
 
 type Expense = {
     id: string,
@@ -27,63 +25,73 @@ type Props = {
     sortColumn: keyof Expense
 }
 
-
 export default function MobileExpenseList({
     sortData,
     sortDirection,
     spendingData,
-    currency,//
+    currency,
     setSortDirection,
     sortColumn
-
 }: Props) {
-    const [sortOption, setSortOption] = useState<SortOption>('Date')
 
     const toggleSortDirection = () => {
         setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         sortData(sortColumn);
     };
 
+    const handleSort = (value: string) => {
+        let newSortColumn: keyof Expense;
+        let newSortOption: SortOption;
+
+        switch (value) {
+            case 'createdAt':
+                newSortColumn = 'createdAt';
+                newSortOption = 'Date';
+                break;
+            case 'sum':
+                newSortColumn = 'sum';
+                newSortOption = 'Amount';
+                break;
+            case 'type':
+                newSortColumn = 'type';
+                newSortOption = 'Type';
+                break;
+            default:
+                newSortColumn = 'createdAt';
+                newSortOption = 'Date';
+        }
+        sortData(newSortColumn);
+    }
+
     return (
-
-        <div className="mt-4 space-y-4">
-            <div className="flex flex-row sm:flex-row justify-between items-start sm:items-center gap-2">
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button className="w-full sm:w-auto">
-                            <span>Sort by: {sortOption}</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuItem onClick={() => {
-                            sortData('createdAt')
-                            setSortOption('Date')
-                        }}>Date</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => {
-                            sortData('sum')
-                            setSortOption('Amount')
-                        }}>Amount</DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => {
-                            sortData('type')
-                            setSortOption('Type')
-                        }}>Type</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <Button onClick={toggleSortDirection} className="sm:w-auto">
-                    {sortDirection === 'asc' ? (
-
-                        <ChevronUp className=" h-4 w-4" />
-
-                    ) : (
-
-                        <ChevronDown className=" h-4 w-4" />
-
-                    )}
+        <div className="mt-4 space-y-4 md:hidden">
+            <div className="flex flex-row  sm:flex-row justify-between items-start sm:items-center gap-2">
+                <Select onValueChange={handleSort} defaultValue="createdAt">
+                    <SelectTrigger className=" justify-center select-trigger-no-icon">
+                        <SelectValue placeholder="Sort by" />
+                    </SelectTrigger>
+                    <SelectContent >
+                        <SelectItem value="createdAt">Date</SelectItem>
+                        <SelectItem value="sum">Amount</SelectItem>
+                        <SelectItem value="type">Type</SelectItem>
+                    </SelectContent>
+                </Select>
+                <Button
+                    className="p-3"
+                    variant="outline"
+                    size="icon"
+                    onClick={toggleSortDirection}
+                    aria-label={`Sort ${sortDirection === 'asc' ? 'ascending' : 'descending'}`}
+                >
+                    {sortDirection === 'asc'
+                        ? <ArrowUp className=" h-5 w-5" />
+                        : <ArrowDown className=" h-5 w-5" />
+                    }
                 </Button>
             </div>
             <div className="space-y-4">
                 {spendingData.map((expense, index) => (
-                    <Card key={index}>
+                    <Card key={expense.id || index}>
                         <CardContent className="p-4">
                             <div className="flex justify-between items-center mb-2">
                                 <span className="font-small">{expense.createdAt}</span>
