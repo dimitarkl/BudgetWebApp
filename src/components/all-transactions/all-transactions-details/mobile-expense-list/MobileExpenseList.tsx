@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import AllTransactionDetails from "../AllTransactionDetails"
-import { ArrowDown, ArrowUp, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowDown, ArrowUp } from "lucide-react"
 
 type Expense = {
     id: string,
@@ -14,7 +14,6 @@ type Expense = {
 }
 type Expenses = Expense[]
 
-type SortOption = 'Date' | 'Amount' | 'Type'
 
 type Props = {
     sortData: (column: keyof Expense) => void;
@@ -41,24 +40,19 @@ export default function MobileExpenseList({
 
     const handleSort = (value: string) => {
         let newSortColumn: keyof Expense;
-        let newSortOption: SortOption;
 
         switch (value) {
             case 'createdAt':
                 newSortColumn = 'createdAt';
-                newSortOption = 'Date';
                 break;
             case 'sum':
                 newSortColumn = 'sum';
-                newSortOption = 'Amount';
                 break;
             case 'type':
                 newSortColumn = 'type';
-                newSortOption = 'Type';
                 break;
             default:
                 newSortColumn = 'createdAt';
-                newSortOption = 'Date';
         }
         sortData(newSortColumn);
     }
