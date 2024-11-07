@@ -1,4 +1,5 @@
 import { deleteExpense } from "@/api/expenses";
+import { ErrorContext } from "@/components/contexts/ErrorContext";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -12,7 +13,9 @@ import {
 } from "@/components/ui/alert-dialog"
 
 import { Button } from "@/components/ui/button";
+import { isError } from "@/lib/errorCheck";
 import { Trash2 } from "lucide-react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 type Props = {
     id: string
@@ -20,9 +23,16 @@ type Props = {
 
 export default function DeleteTransaction({ id }: Props) {
     const navigate = useNavigate()
+    const errorContext = useContext(ErrorContext)
     async function handleDelete() {
-        await deleteExpense(id)
-        navigate('/')
+        try {
+            const response = await deleteExpense(id)
+            if (isError(response)) return errorContext?.setError('Error Deleting Item')
+            navigate('/')
+        } catch (error) {
+            errorContext?.setError('Error Deleting Item')
+            console.log('Error Deleting Item:' + (error as Error).message)
+        }
     }
 
     return (
