@@ -11,6 +11,7 @@ import { Button } from "../ui/button"
 import { DialogTrigger } from "../ui/dialog"
 import { Dialog } from "@radix-ui/react-dialog"
 import { PlusCircle } from "lucide-react"
+import AllTransactionDetails from "../all-transactions/all-transactions-details/AllTransactionDetails"
 
 type Expenses = {
     id: string,
@@ -198,16 +199,21 @@ export default function Dashboard() {
                     <CardContent>
                         <ul className="divide-y divide-gray-200">
                             {recentTransactions.map((transaction) => (
-                                <li key={transaction.id} className="py-4 flex justify-between items-center">
-                                    <div>
-                                        <p className="font-medium truncate">{transaction.description
-                                            ? transaction.description
-                                            : 'No data'
-                                        }</p>
-                                        <p className="text-sm text-gray-500">{transaction.createdAt}</p>
-                                    </div>
-                                    <p className="font-semibold">{transaction.sum} {currency}</p>
-                                </li>
+                                <Dialog key={transaction.id}>
+                                    <DialogTrigger asChild>
+                                        <li key={transaction.id} className="py-4 flex justify-between items-center">
+                                            <div>
+                                                <p className="font-medium truncate">{transaction.description
+                                                    ? transaction.description
+                                                    : 'No data'
+                                                }</p>
+                                                <p className="text-sm text-gray-500">{transaction.createdAt}</p>
+                                            </div>
+                                            <p className="font-semibold">{transaction.sum} {currency}</p>
+                                        </li>
+                                    </DialogTrigger>
+                                    <AllTransactionDetails currency={currency} expense={transaction} />
+                                </Dialog>
                             ))}
                         </ul>
                     </CardContent>
