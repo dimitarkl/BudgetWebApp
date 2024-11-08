@@ -7,8 +7,8 @@ import { getExpenses, listenToUserPreference } from "@/api/expenses"
 import { Spinner } from "../ui/spinner"
 import { Error } from "../error/Error"
 import { isError } from "@/lib/errorCheck"
-import MobileExpenseList from "./all-transactions-details/mobile-expense-list/MobileExpenseList"
-import DesktopExpenseList from "./all-transactions-details/desktop-expense-list/DesktopExpenseList"
+import MobileExpenseList from "./mobile-expense-list/MobileExpenseList"
+import DesktopExpenseList from "./desktop-expense-list/DesktopExpenseList"
 import { ErrorContext } from "../contexts/ErrorContext"
 type Period = 1 | 3 | 6 | 12;
 

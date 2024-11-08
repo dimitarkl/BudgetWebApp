@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import AllTransactionDetails from "../AllTransactionDetails"
-import { ArrowDown, ArrowUp } from "lucide-react"
+import AllTransactionDetails from "../all-transactions-details/AllTransactionDetails"
+import { ArrowDown, ArrowUp, Info } from "lucide-react"
+import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 
 type Expense = {
     id: string,
@@ -93,7 +94,15 @@ export default function MobileExpenseList({
                             </div>
                             <div className="flex justify-between items-center">
                                 <span>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</span>
-                                <AllTransactionDetails currency={currency} expense={expense} />
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                            <Info className="h-4 w-4" />
+                                            <span className="sr-only">View details</span>
+                                        </Button>
+                                    </DialogTrigger>
+                                    <AllTransactionDetails currency={currency} expense={expense} />
+                                </Dialog>
                             </div>
                         </CardContent>
                     </Card>

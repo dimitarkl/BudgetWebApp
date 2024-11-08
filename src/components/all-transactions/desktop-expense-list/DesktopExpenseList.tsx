@@ -1,7 +1,8 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import AllTransactionDetails from "../AllTransactionDetails";
-import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react"
+import AllTransactionDetails from "../all-transactions-details/AllTransactionDetails";
+import { ArrowDown, ArrowUp, ArrowUpDown, Info } from "lucide-react"
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 type Expense = {
     id: string,
     userId: string,
@@ -67,7 +68,15 @@ export default function DesktopExpenseList({
                             <TableCell>{expense.type.charAt(0).toUpperCase() + expense.type.slice(1)}</TableCell>
                             <TableCell className="text-right">{expense.sum.toFixed(2)}</TableCell>
                             <TableCell className="text-right">
-                                <AllTransactionDetails currency={currency} expense={expense} />
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button variant="ghost" size="icon">
+                                            <Info className="h-4 w-4" />
+                                            <span className="sr-only">View details</span>
+                                        </Button>
+                                    </DialogTrigger>
+                                    <AllTransactionDetails currency={currency} expense={expense} />
+                                </Dialog>
                             </TableCell>
                         </TableRow>
                     ))}
