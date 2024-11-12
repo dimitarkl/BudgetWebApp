@@ -6,7 +6,6 @@ type FetchData = {
     id: string,
     userId: string,
     createdAt: string
-    //TODO change to number
     sum: number,
     type: string,
     description?: string,
@@ -35,7 +34,7 @@ const createExpense = async (userId: string, sum: string, type: string, transact
 
 }
 const getExpenses = async (months: number) => {
-    let user: string;//TODO add error handling    
+    let user: string;
     if (auth.currentUser?.uid) user = auth.currentUser?.uid
     else return new Error('User Not Logged In')
     const monthsAgo = new Date();
@@ -62,7 +61,7 @@ const getExpenses = async (months: number) => {
         });
         return data.reverse()
     } catch (err: any) {
-        throw err instanceof Error ? err : new Error(String(err));
+        return err instanceof Error ? err : new Error(String(err));
     }
 }
 const deleteExpense = async (id: string) => {

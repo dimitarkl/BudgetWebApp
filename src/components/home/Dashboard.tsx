@@ -36,6 +36,7 @@ export default function Dashboard() {
     const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>()
     const [recentTransactions, setRecentTransactions] = useState<Expenses>([])
     const [currency, setCurrency] = useState('BGN')
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -77,7 +78,6 @@ export default function Dashboard() {
                 return 'hsl(var(--chart-5))'
                 break
             case "other":
-                //TODO add another color 
                 return 'hsl(var(--chart-6))'
                 break
 
