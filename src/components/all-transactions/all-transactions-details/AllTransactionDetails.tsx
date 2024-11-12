@@ -44,7 +44,7 @@ export default function AllTransactionDetails(
     }
     return (
 
-        <DialogContent className="sm:max-w-[425px] ">
+        <DialogContent >
             <DialogHeader>
                 <DialogTitle>Transaction Details</DialogTitle>
                 <DialogDescription >
@@ -62,7 +62,7 @@ export default function AllTransactionDetails(
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                     <span className="font-bold">Amount:</span>
-                    <span className="col-span-3">{currency}{expense.sum.toFixed(2)}</span>
+                    <span className="col-span-3">{expense.sum.toFixed(2)} {currency}</span>
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
                     <span className="font-bold">Description:</span>
