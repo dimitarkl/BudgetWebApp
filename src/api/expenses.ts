@@ -11,11 +11,10 @@ type FetchData = {
     description?: string,
 }[]
 
-const createExpense = async (userId: string, sum: string, type: string, transactionType: string, description?: string,) => {
+const createExpense = async (userId: string, sum: string, type: string, description?: string,) => {
     let amount: number = parseFloat(sum)
     if (isNaN(amount)) return new Error('Invalid amount');
 
-    if (transactionType === 'expense') amount = -amount
     const body = {
         userId,
         createdAt: serverTimestamp(),
@@ -73,10 +72,9 @@ const deleteExpense = async (id: string) => {
 
 }
 
-const editExpense = async (id: string, userId: string, sum: string, type: string, transactionType: string, description?: string) => {
+const editExpense = async (id: string, userId: string, sum: string, type: string, description?: string) => {
     let amount: number = parseFloat(sum)
     if (isNaN(amount)) return
-    if (transactionType === 'expense' || amount < 0) amount = -amount
 
     const body = {
         userId,

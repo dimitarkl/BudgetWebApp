@@ -73,7 +73,7 @@ export default function ExpenseEntry({
         switch (inputType) {
             case 'Create':
                 if (type && user?.uid) {
-                    const response = await createExpense(user?.uid, data.sum, type, data.transactionType, data.description)
+                    const response = await createExpense(user?.uid, data.sum, type, data.description)
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
@@ -87,7 +87,7 @@ export default function ExpenseEntry({
                 break;
             case 'Edit':
                 if (type && user?.uid && expense) {
-                    const response = await editExpense(expense.id, user?.uid, data.sum, type, data.transactionType, data.description)
+                    const response = await editExpense(expense.id, user?.uid, data.sum, type, data.description)
                     if (isError(response)) {
                         setErrorMessage(response.message)
                         return
@@ -135,6 +135,11 @@ export default function ExpenseEntry({
                                                 checked={field.value === 'income'}
                                                 onCheckedChange={(checked) => {
                                                     field.onChange(checked ? 'income' : 'expense')
+                                                    //Not updating on time so we take the opposite
+                                                    if (field.value === 'income' && form.getValues('sum') && Array.from(form.getValues('sum'))[0] !== '-')
+                                                        form.setValue('sum', '-' + form.getValues('sum'))
+                                                    else if (form.getValues('sum') && Array.from(form.getValues('sum'))[0] === '-')
+                                                        form.setValue('sum', form.getValues('sum').slice(1))
                                                 }}
                                             />
                                         </div>
@@ -149,7 +154,13 @@ export default function ExpenseEntry({
                                 render={({ field }) => (
                                     <FormItem className="flex-grow">
                                         <FormControl>
-                                            <Input className='text-2xl' type="number" {...field} />
+                                            <Input className='text-2xl' type="number" pattern="-?[0-9]+"{...field} onChange={(e) => {
+                                                field.onChange(e.target.value)
+                                                if (parseFloat(e.target.value) < 0)
+                                                    form.setValue('transactionType', 'expense')
+                                                else
+                                                    form.setValue('transactionType', 'income')
+                                            }} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
