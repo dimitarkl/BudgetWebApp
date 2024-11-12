@@ -107,7 +107,7 @@ export default function Login() {
                             )}
                         />
                         <Button type="submit" className="w-full" size="lg">
-                            Create Account
+                            Login
                             <ArrowRight className="ml-2 h-4 w-4" />
                         </Button>
                         {errorMessage && <Error message={errorMessage} />}
