@@ -31,9 +31,11 @@ import { useNavigate } from "react-router-dom"
 
 const formSchema = z.object({
     //TODO add validation
-    sum: z.string().min(1, {
-        message: "Please enter a Number"
-    }),
+    sum: z.string()
+        .min(1, "Amount is required")
+        .refine((val) => !isNaN(Number(val)), {
+            message: "Please enter a valid  number",
+        }),
     description: z.string().optional(),
     transactionType: z.enum(["expense", "income"]),
 })
@@ -110,7 +112,7 @@ export default function ExpenseEntry({
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-4 ">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-md space-y-4">
                         <FormField
                             control={form.control}
                             name="transactionType"
@@ -140,15 +142,16 @@ export default function ExpenseEntry({
                                 </FormItem>
                             )}
                         />
-                        <div className=" flex flex-row">
+                        <div className="flex flex-row space-x-2">
                             <FormField
                                 control={form.control}
                                 name="sum"
                                 render={({ field }) => (
-                                    <FormItem>
+                                    <FormItem className="flex-grow">
                                         <FormControl>
                                             <Input className='text-2xl' type="number" {...field} />
                                         </FormControl>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -161,12 +164,11 @@ export default function ExpenseEntry({
                                 <FormItem>
                                     <FormLabel>Description</FormLabel>
                                     <FormControl>
-                                        <Input type="description" {...field} className="h-24" />
+                                        <Input {...field} className="h-24" />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
-
                         />
                         <Button type="submit">Save changes</Button>
                         {errorMessage && <Error message={errorMessage} />}
