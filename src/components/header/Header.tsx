@@ -29,9 +29,14 @@ export default function Header({
                     <CurrencySelector />
                 </NavigationMenuItem>}
                 <NavigationMenuItem>
-                    <Link to="/" className={navigationMenuTriggerStyle()}>
-                        Home
-                    </Link>
+                    {user
+                        ? <Link to="/dashboard" className={navigationMenuTriggerStyle()}>
+                            Home
+                        </Link>
+                        : <Link to="/" className={navigationMenuTriggerStyle()}>
+                            Home
+                        </Link>
+                    }
                 </NavigationMenuItem>
                 {user
                     ?

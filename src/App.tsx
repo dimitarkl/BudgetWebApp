@@ -38,9 +38,14 @@ function App() {
 				<ThemeProvider defaultTheme="dark" >
 					<Header logout={logout} />
 					<Routes>
-						{loggedIn
-							? <Route path='/' element={<Dashboard />} />
-							: <Route path='/' element={<LandingPage />} />}
+
+						<Route path='/dashboard' element={
+							<RouteGuard user={loggedIn} ><Dashboard /></RouteGuard>
+						} />
+						<Route path='/' element=
+							{
+								<AuthGuard user={loggedIn} ><LandingPage /></AuthGuard>
+							} />
 						<Route path='/login' element=
 							{
 								<AuthGuard user={loggedIn} ><Login /></AuthGuard>
