@@ -8,7 +8,7 @@ type Props = {
 
 export default function AuthGuard({ user, children }: Props) {
     if (user) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/dashboard" replace />;
     }
     return children;
 };
