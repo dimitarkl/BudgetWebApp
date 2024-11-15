@@ -28,7 +28,7 @@ export default function DeleteTransaction({ id }: Props) {
         try {
             const response = await deleteExpense(id)
             if (isError(response)) return errorContext?.setError('Error Deleting Item')
-            navigate('/')
+            navigate(0)
         } catch (error) {
             errorContext?.setError('Error Deleting Item')
             console.log('Error Deleting Item:' + (error as Error).message)
