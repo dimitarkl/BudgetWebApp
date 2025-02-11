@@ -14,11 +14,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import ExpenseEntry from "../expense-entry/ExpenseEntry";
-import {
-  getExpenses,
-  listenToUserPreference,
-  savePreference,
-} from "@/api/expenses";
+import { getExpenses, listenToUserPreference } from "@/api/expenses";
 import { useContext, useEffect, useState } from "react";
 import { Spinner } from "../ui/spinner";
 import { Button } from "../ui/button";
@@ -51,7 +47,6 @@ export default function Dashboard() {
   const [aggregatedData, setAggregatedData] = useState<AggregatedData[]>();
   const [recentTransactions, setRecentTransactions] = useState<Expenses>([]);
   const [currency, setCurrency] = useState("BGN");
-  const user = useContext(UserContext);
   useEffect(() => {
     const fetchData = async () => {
       try {
