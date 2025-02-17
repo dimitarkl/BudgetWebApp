@@ -13,10 +13,9 @@ export default function LandingPage() {
               BudgetWebApp
             </h1>
             <p>
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quos
-              voluptatibus quisquam eum eveniet ea reiciendis repellat nemo
-              asperiores vero soluta accusantium quibusdam ad ab nesciunt, illo
-              facere aperiam quod aliquam?
+            Your personal finance tracker that keeps you in
+							control—track your spending and take charge of your
+							financial future with confidence and ease.
             </p>
           </div>
           <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
