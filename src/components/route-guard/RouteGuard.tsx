@@ -8,7 +8,7 @@ type Props = {
 };
 
 export default function RouteGuard({ user, children }: Props) {
-	if (!user) {
+	if (user == null) {
 		return <Navigate to="/" replace />;
 	} else if (user) return children;
 	return <Spinner />;
